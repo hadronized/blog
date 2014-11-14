@@ -9,7 +9,7 @@ You might also already know [shader toy](https://www.shadertoy.com/). That’s a
 
 So you write your shader as a source code in a host language, for instance in *C/C++*, *Java*, *Haskell*, *whatever*, and you end up with a shader running on GPU.
 
-There’s two nasty issues with that way of doing though:
+There’re two nasty issues with that way of doing though:
 
   - the shader is compiled at runtime, so if it contains error, you’ll know that after your application starts ;
   - you have to learn a new language for each target shader compilers.
@@ -32,7 +32,7 @@ It gives you something hyper cool: **host language features**. If you have a str
 
 This issue is not as important as the first one, but still. If you’re working on a project and you target several platforms (among ones using *OpenGL*, *OpenGL ES*, *DirectX* and a *soft renderer*), you’ll have to learn several shading languages as well (**GLSL**, **HLSL**[^HLSL]).
 
-In order to solve that, there’s two ways to go:
+In order to solve that, there’re two ways to go:
 
   - a DSL[^DSL] ;
   - an EDSL[^EDSL].
