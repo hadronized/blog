@@ -127,7 +127,7 @@ let pos :. col = v
 This is the tricky part. That *let expression* extracts the components out of the vertex and binds them to `pos` and `col` for later use.
 
 ```
-in proj #* v3v4 pos 1 :. pos
+in proj #* v3v4 pos 1 :. col
 ```
 
 `(#*)` is a cool operator used to multiply a matrix by a vector, yielding a new vector.
