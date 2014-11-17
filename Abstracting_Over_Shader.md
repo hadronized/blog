@@ -84,10 +84,10 @@ void main() {
 And now, the Ash one:
 
 ```
-vertexShader :: Ash (M44 Float -> V3 Float :. V4 Float -> V3 Float :. V4 Float)
+vertexShader :: Ash (M44 Float -> V3 Float :. V4 Float -> V4 Float :. V4 Float)
 vertexShader = lam $ \proj -> lam $ \v ->
   let pos :. col = v
-  in proj #* v3v4 pos 1 :. pos
+  in proj #* v3v4 pos 1 :. col
 ```
 
 `Ash` is the type used to lift the shading expression up to Haskell. You use it to use the EDSL. It actually represents some kind of HOAST[^HOAST].
