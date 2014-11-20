@@ -6,50 +6,35 @@ This blog entry directly follows [this one](http://phaazon.blogspot.co.uk/2014/1
 
 Before anything else, I’d like to point out something changed from the latest blog entry. The type called `Chain` is now called `Pipeline`. It’s more concise and simpler to understand that way.
 
-# Shaders
+# Shader stages
 
-As said earlier, shaders are functions that have access to an environment. In this post, we’ll see two new aspects about shaders:
+*Shaders* are commonly the name we give to *shader stages*. A full *shader* is actually a chain of stages. There’re several kind of shader stages:
 
-  - they compose;
-  - they have a frequency.
+  - vertex stage;
+  - tessellation evaluation stage (optional);
+  - tesselattion control stage (optional);
+  - geometry stage (optional);
+  - fragment stage.
 
-## Composition
+## Vertex stage
 
-Since a shader is *functionish*, we could expect it to be composable.
+The vertex stage is always the entry stage of a shader. It’s run for all vertices. We can say it has a `Vert` frequency[^frequency]. In Ash, a vertex shader must have the following type:
 
-> *What do you mean, composable?*
+    Shader (Expr (a :. b -> V3 Float :. c))
 
-If a shader `vs` outputs something of type `x`, and an other shader `fs` takes `x` an outputs `y`, we could write:
+Let’s analyze that signature.
 
-    p(x) = fs(vs(x)) <=> p = fs . vs
+`Shader a` is the type used to represent a stage. `(a :. b)` represents a tuple expression. Tuple expressions are used to glue types. We can see that a vertex shader has a type implying a function. It’s because it is, a function! It takes a tuple and returns a special tuple, `V3 Float :. c`.
 
-That is called composition. We do **love** composition in Haskell. And more generally, composability[^composability].
+## Tessellation stages
 
-What do we mean here is that `fs . vs` is a shader composition, hence a new shader. Say that to a graphics developer, they’ll laugh their head off. Because gluing two shaders yielding a new shader doesn’t really make any sense for them.
+The tessellation evaluation and tessellation control stages won’t be covered in this paper.
 
-### Theory, reality…
+##
 
-However, in a strictly theoric way, it does. People’s minds are shaped by current technologies such as *OpenGL* or *DirectX* in which shaders are hardly composable. In *OpenGL* for instance, shaders don’t compose. They’re put in a pipeline and “play their roles”. That’s pretty stupid, because we **know** it’s somewhat a composition though. A vertex shader outputs are directly passed to a fragment shader inputs, for instance. Or a vertex shader outputs to a geometry shader that outputs to a fragment shader:
+The geometry stage is run for each primitives (`Prim` frequency). It’s an optional stage.
 
-    pipeline(vertex_components) = frag_shader(geo_shader(vert_shader(vertex_components)))
-    pipeline = frag_shader . geo_shader . vert_shader
-
-So why OpenGL doesn’t do that? Well, OpenGL separates the GLSL code source of each shader. Each shader has a `main` function, a uniform interface, a varying interface… You can’t directly use shaders, you have to put them altogether to yield a *shader program*. So, in OpenGL, if you “compose” two *shaders*, you end up with a *program*, and you can’t do much more with then, which is a pity.
-
-### What’s about Ash?
-
-In Ash, shaders do compose! You can write two shaders, and compose them the regular way compose functions or any composable objects. For instance:
-
-```
-vs = …
-fs = …
-fsvs = fs . vs
-```
-
-We’ll see that later on.
-
-## Frequency
-
+The final stage is always a fragment stage. It’s run for all the covered pixels by primitives on screen.
 
 # Embedding shaders into pipelines
 
@@ -57,4 +42,4 @@ Shaders – or shader stages – have their own type in Ash: `Shader`.
 
 
 
-[^composability]: See http://en.wikipedia.org/wiki/Composability.
+[^frequency]: The frequency of a shader stage gives how often it’ll be invoked (or for each object it will).
