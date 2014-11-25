@@ -225,7 +225,6 @@ it’s abstract to any `Monad`, we could implement effects in `IO`, specific one
 
 Let’s see an example in `IO`.
 
-```
 > `foo`
 
 set to 314
@@ -259,4 +258,3 @@ succ!
 > bar 314
 
 17.720045
-```
