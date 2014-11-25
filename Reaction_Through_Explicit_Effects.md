@@ -4,20 +4,20 @@ This paper is a pause from my spree about the **ash** shading language library I
 3D engine, [photon](https://github.com/phaazon/photon), in which I plan to use **ash**. The projects are then closely
 related ;).
 
-The purpose of this paper is to discover a nice way of dealing with the *reaction* problem. There’s common and
+The purpose of this paper is to discover a nice way of dealing with the *reaction* problem. There’re common and
 elegant solutions that address the problem, like FRP[^FRP], which is pretty elegant, but also very experimental. I
 wanted to explore on my own. This is what I come up with.
 
 ## Side effect
 
-As a programmer, you might already have come across **side- effects**. You haven’t? Let’s have a look at these nasty
+As a programmer, you might already have come across **side effects**. You haven’t? Let’s have a look at these nasty
 things.
 
 A **side effect** is a big word to describe an *effect* a function has that mutates something out of scope. For
 instance, you could picture a function modifying a global state, environment or any kind of “*remote*” value.
 
-Another way to understand what a side effect is is to look at referencial
-[transparency](http://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29). If you
+Another way to understand what a side effect is is to look at
+[referential transparency](http://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29). If you
 need *assumptions* to be able to say what a piece of code does, you might be in the presence of a side effect.
 For instance, look at this **C++** snippet:
 
@@ -50,7 +50,7 @@ int main() {
 ```
 
 A *class*, you said? As you can see, we can’t say what that code does, because we have to look at **all possible**
-objects that code might touch. It could be class method, it could be a simple function, `_x` and `_y` could be `int`
+code lines that code might touch. It could be a class method, it could be a simple function, `_x` and `_y` could be `int`
 as well as they could be `Foo` objects with the `operator+=` overloaded. The list is long.
 
 In that snippet, `_x += rx` and `_y += ry` are side effects, because they alter “something” *elsewhere*. That could
@@ -59,7 +59,7 @@ make your code base evolve. As a good programmer, you should care about side eff
 
 ## Purity
 
-In pure functional language like **Haskell*, we can’t do that, at least not directly. We would write this function:
+In pure functional languages like **Haskell**, we can’t do that that kind of assignment, at least not directly. We would write this function:
 
 ```
 update :: (Int,Int) -> (Int,Int) -> (Int,Int)
@@ -72,7 +72,7 @@ change. So we can say what that function does:
 > *It takes a pair of int and apply them an offset!*
 
 Yeah, exactly. And it can’t be **anything else**. We don’t need assumptions, because such a function is
-*transparent*. That’s a great property you can rely on – do it, your compiler does it ;)
+*transparent*. That’s a great property you can rely on – do it, your compiler does ;)
 
 ## However, we still need side effects
 
@@ -124,7 +124,7 @@ public:
   Foo(void) : _a(0), _b("") {}
   ~Foo(void) {}
   
-  void addObserver(Observer &observer) {
+  void addObserver(FooObserver &observer) {
     _observers.push_back(observer);
   }
   
@@ -159,12 +159,12 @@ I’ve been wondering around for a while. There’re folks that advise to use
 [FRP](https://www.haskell.org/haskellwiki/Functional_Reactive_Programming). It addresses the issue
 another way though – I won’t talk about FRP in this post, maybe later since it’s a very interesting
 concept. For my part, I wanted something like [pipes](http://hackage.haskell.org/package/pipes).
-Being able to compose my functions and have effects.
+Being able to compose my functions along with having effects.
 
 In [photon](https://github.com/phaazon/photon), my 3D engine, I use explicit effects to implement
 reactions. That is done via a typeclass called `Effect`:
 
-```
+```haskell
 class (Monad m) => Effect e m where
   react :: e -> m ()
 ```
@@ -176,7 +176,7 @@ at a few examples.
 
 Let’s start with a simple example:
 
-```
+```haskell
 -- This type represents all effects we want to observe.
 data IntChanged
   = IntSucc
@@ -279,7 +279,7 @@ Let’s see an example in `IO`.
 
 > 17.720045
 
-As you can see, because our `foo` and `bar` functions are polymorphic, we can use them with any types
+Because our `foo` and `bar` functions are polymorphic, we can use them with any types
 implementing the wished effects! That’s pretty great because it enables us to write our code in an
 abstract way, and interpret it with backends.
 
@@ -292,10 +292,10 @@ Having *effects* is great, but how could we make an effect like:
 
 ## Handles
 
-I use *handles* to deal with that, I use a type to represent handles (`H`). Each object that can be *managed*
+I use *handles* to deal with that. I use a type to represent handles (`H`). Each object that can be *managed*
 (i.e. that can have a handle) can be wrapped up in `Managed a`. Basically:
 
-```
+```haskell
 type H = Int
 
 data Managed a = Managed {
@@ -315,18 +315,18 @@ Hence two new types: `Manager m` and `EffectfulManage a s l`.
 
 A manager is a monad that can generate new handles to manage any kind of value and recycle managed values:
 
-```
+```haskell
 class (Monad m) => Manager m where
   manage :: a -> m (Managed a)
   drop   :: Managed a -> m ()
 ```
 
-`manage a` will turn `a` any a managed version you can use for whatever you want. In theory, you shouldn’t
+`manage a` will turn `a` into a managed version you can use for whatever you want. In theory, you shouldn’t
 have access to the constructor of `Managed` nor the `handle` field.
 
 If a type implements both `Monad` and `Manager`, we can manage values and recycle them very easily:
 
-```
+```haskell
 import Prelude hiding ( drop )
 
 foo :: (Manager m) => m ()
@@ -344,7 +344,7 @@ foo = do
 However, we’d like to be able to react to the fact a value is now tracked by our monad, or recycled. That’s
 done through the following typeclass:
 
-```
+```haskell
 class EffectfulManage a s l | a -> s l where
   spawned :: Managed a -> s
   lost    :: Managed a -> l
@@ -355,7 +355,7 @@ dependencies, `a -> s l` means you can’t have two pairs of events for the same
 
 Let’s take an example.
 
-```
+```haskell
 data IntSpawned = IntSpawned (Managed Int)
 data IntLost = IntLost (Managed Int)
 
@@ -364,27 +364,27 @@ instance EffectfulManage Int IntSpawned IntLost where
   lost = IntLost
 ```
 
-Pretty simple. Now, there’re two function to react to such events:
+Pretty simple. Now, there’re two functions to react to such events:
 
-```
+```haskell
 spawn :: (Manager m,EffectfulManage a s l,Effect s m) => a -> m (Managed a)
 lose :: (Manager m,EffectfulManage a s l,Effect l m) => Managed a -> m ()
 ```
 
 `spawn a` manages the value `a`, returning its *managed* version, and as you can see in the type signature, have
-an effect of type `s`, which is the *spawned* effect. `lost a` takes a managed value, drop it, and emit the
+an effect of type `s`, which is the *spawned* effect. `lost a` takes a managed value, drops it, and emits the
 corresponding `l` event.
 
 In our case, with our `Int`, we can specialize both the functions this way:
 
-```
+```haskell
 spawn :: (Manager m,EffectfulManage Int IntSpawned IntLost,Effect IntSpawned m) => Int -> m (Managed Int)
 lost :: (Manager m,EffectfulManage Int IntSpawned IntLost,Effect IntLost m) => Managed Int -> m ()
 ```
 
 Let’s write a simple example:
 
-```
+```haskell
 instance (Functor m,Monad m) => Manager (StateT [H] m) where
   manage x = fmap (flip Managed x) (gets head <* modify tail)
   drop (Managed h _) = modify $ (:) h
