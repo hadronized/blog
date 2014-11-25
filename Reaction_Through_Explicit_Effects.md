@@ -151,4 +151,62 @@ another way though – I won’t talk about FRP in this post, maybe later since 
 concept. For my part, I wanted something like [pipes](http://hackage.haskell.org/package/pipes).
 Being able to compose my functions and have effects.
 
-In [photon](https://github.com/phaazon/photon), my 3D engine, I use explicit effects.
+In [photon](https://github.com/phaazon/photon), my 3D engine, I use explicit effects to implement
+reactions. That is done via a typeclass called `Effect`:
+
+```
+class (Monad m) => Effect e m where
+  react :: e -> m ()
+```
+
+Pretty straight-forward eh? We call `react e` to react to an event of type `e`. Let’s have a look
+at a few examples.
+
+## `react`, examples
+
+Let’s start with a simple example:
+
+```
+-- This type represents all effects we want to observe.
+data IntChanged
+  = IntSucc
+  | IntPred
+  | IntConst Int
+    deriving (Eq,Show)
+
+-- This instance enables us to react in a State Int.
+instance  Effect IntChanged (State Int) where
+  react e = case e of
+    IntSucc -> modify succ
+    IntPred -> modify pred
+    IntConst x -> put x
+
+foo :: (Effect IntChanged m) => m String
+foo = do
+  react (IntConst 314)
+  return "foo"
+
+bar :: (Effect IntChanged m) => Float -> m Float
+bar a = do
+  when (sqrt a < 10) . replicateM_ 3 $ react IntSucc
+  return (a + pi)
+```
+
+Let’s use that. I use explicit types because I’m in *ghci*:
+
+> `flip runState 0 (foo :: State Int String)`
+> ("foo",314)
+>
+> `flip runState 0 (bar 0 :: State Int Float)`
+> (0.0,3)
+> 
+> `flip runState 0 (bar 10 :: State Int Float)`
+> (3.1622777,3)
+>
+> `flip runState 0 (bar 99 :: State Int Float)`
+> (9.949874,3)
+>
+> `flip runState 0 (bar 100 :: State Int Float)`
+> (10.0,0)
+> `flip runState 0 (bar 314 :: State Int Float)`
+> (17.720045,0)
