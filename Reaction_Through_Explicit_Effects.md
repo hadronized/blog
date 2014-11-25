@@ -195,18 +195,24 @@ bar a = do
 Let’s use that. I use explicit types because I’m in *ghci*:
 
 > `flip runState 0 (foo :: State Int String)`
+
 > ("foo",314)
->
+
 > `flip runState 0 (bar 0 :: State Int Float)`
+
 > (0.0,3)
-> 
+
 > `flip runState 0 (bar 10 :: State Int Float)`
+
 > (3.1622777,3)
->
+
 > `flip runState 0 (bar 99 :: State Int Float)`
+
 > (9.949874,3)
->
+
 > `flip runState 0 (bar 100 :: State Int Float)`
+
 > (10.0,0)
+
 > `flip runState 0 (bar 314 :: State Int Float)`
 > (17.720045,0)
