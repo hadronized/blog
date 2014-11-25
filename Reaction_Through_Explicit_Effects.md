@@ -162,7 +162,7 @@ class (Monad m) => Effect e m where
 Pretty straight-forward eh? We call `react e` to react to an event of type `e`. Let’s have a look
 at a few examples.
 
-## `react`, examples
+## `react`, examples – Part 1
 
 Let’s start with a simple example:
 
@@ -215,4 +215,48 @@ Let’s use that. I use explicit types because I’m in *ghci*:
 > (10.0,0)
 
 > `flip runState 0 (bar 314 :: State Int Float)`
+
 > (17.720045,0)
+
+As you can see, we can have effects without `IO`. In that case, it was pretty simple. But since
+it’s abstract to any `Monad`, we could implement effects in `IO`, specific ones.
+
+## `react`, examples – Part 2
+
+Let’s see an example in `IO`.
+
+```
+> `foo`
+
+set to 314
+"foo"
+
+> bar 0
+
+succ!
+succ!
+succ!
+0.0
+
+> bar 10
+
+succ!
+succ!
+succ!
+3.1622777
+
+> bar 99
+
+succ!
+succ!
+succ!
+9.949874
+
+> bar 100
+
+10.0
+
+> bar 314
+
+17.720045
+```
