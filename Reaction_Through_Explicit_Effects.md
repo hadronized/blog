@@ -80,7 +80,7 @@ can’t but `IO a` can.
 We have `IO a` to explicitely deal with side effects, that’s cool. However, `IO` represents **any** kind of side
 effects. We’d like to be able to explicitely say *“Hey, I can have that effect”*.
 
-# Reaction: Part 1 – Explicit effects
+# Reaction: Part 1 – Explicit effects in imperative languages
 
 Reacting to something requires activation. Do you know the
 [observer design pattern](http://en.wikipedia.org/wiki/Observer_pattern)? That is an interesting design pattern
@@ -142,3 +142,13 @@ If we want to react to events emmitted by an object of type `Foo`, we just have 
 that inherits from `FooObserver`, implement its abstract methods and register an object of our type
 so that the value can call it when it has to emmit events. That’s pretty great, but it has a lot of
 side effects, and we’re gonna try to abstract that away.
+
+# Reaction: Part 2 – Explicit effects in **Haskell**
+
+I’ve been wondering around for a while. There’re folks that advise to use 
+[FRP](https://www.haskell.org/haskellwiki/Functional_Reactive_Programming). It addresses the issue
+another way though – I won’t talk about FRP in this post, maybe later since it’s a very interesting
+concept. For my part, I wanted something like [pipes](http://hackage.haskell.org/package/pipes).
+Being able to compose my functions and have effects.
+
+In [photon](https://github.com/phaazon/photon), my 3D engine, I use explicit effects.
