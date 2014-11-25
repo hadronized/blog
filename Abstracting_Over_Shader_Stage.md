@@ -20,11 +20,9 @@ Before anything else, I’d like to point out something changed from the latest 
 
 The vertex stage is always the entry stage of a shader. It’s run for all vertices. We can say it has a `Vert` frequency[^frequency]. In Ash, a vertex shader must have the following type:
 
-    Shader (Expr (a :. b -> V3 Float :. c))
+    Shader Vert a (V3 Float :. b)
 
-Let’s analyze that signature.
-
-`Shader a` is the type used to represent a stage. `(a :. b)` represents a tuple expression. Tuple expressions are used to glue types. We can see that a vertex shader has a type implying a function. It’s because it is, a function! It takes a tuple and returns a special tuple, `V3 Float :. c`.
+Let’s analyze that signature. `Shader f a b` represents a shader stage that consumes values of type `a` at frequency `f` and outputs values of type `b`. So a *vertex shader* consumes `a` and outputs `V3 Float :. c`. The input must represent vertex components. The output is split in two parts `V3 Float` and `b`. `V3 Float` represents the computed position of the processed vertex. `b`
 
 ## Tessellation stages
 

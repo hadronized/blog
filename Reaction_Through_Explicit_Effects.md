@@ -1,7 +1,17 @@
-As a programmer, you might already have come across **side- effects**. You haven’t? Let’s have a look at these nasty
-things.
+# Foreword
+
+This paper is a pause from my spree about the **ash** shading language library I’m working on. I’m also working on a
+3D engine, [photon](https://github.com/phaazon/photon), in which I plan to use **ash**. The projects are then closely
+related ;).
+
+The purpose of this paper is to discover a nice way of dealing with the *reaction* problem. There’s common and
+elegant solutions that address the problem, like FRP[^FRP], which is pretty elegant, but also very experimental. I
+wanted to explore on my own. This is what I come up with.
 
 ## Side effect
+
+As a programmer, you might already have come across **side- effects**. You haven’t? Let’s have a look at these nasty
+things.
 
 A **side effect** is a big word to describe an *effect* a function has that mutates something out of scope. For
 instance, you could picture a function modifying a global state, environment or any kind of “*remote*” value.
@@ -272,3 +282,129 @@ Let’s see an example in `IO`.
 As you can see, because our `foo` and `bar` functions are polymorphic, we can use them with any types
 implementing the wished effects! That’s pretty great because it enables us to write our code in an
 abstract way, and interpret it with backends.
+
+# Extra – handles
+
+Because all of this was firstly designed for my **photon** engine, I had to deal with an important question.
+Having *effects* is great, but how could we make an effect like:
+
+> *“Draw the mesh with ID=486.”*
+
+## Handles
+
+I use *handles* to deal with that, I use a type to represent handles (`H`). Each object that can be *managed*
+(i.e. that can have a handle) can be wrapped up in `Managed a`. Basically:
+
+```
+type H = Int
+
+data Managed a = Managed {
+    handle :: H
+  , managed :: a
+  } deriving (Eq,Show)
+```
+
+Now, because we want to react to the fact that an object is being managed – or not managed anymore – we have
+to introduce special effects.
+
+## Effectful managing
+
+Hence two new types: `Manager m` and `EffectfulManage a s l`.
+
+### `Manager`
+
+A manager is a monad that can generate new handles to manage any kind of value and recycle managed values:
+
+```
+class (Monad m) => Manager m where
+  manage :: a -> m (Managed a)
+  drop   :: Managed a -> m ()
+```
+
+`manage a` will turn `a` any a managed version you can use for whatever you want. In theory, you shouldn’t
+have access to the constructor of `Managed` nor the `handle` field.
+
+If a type implements both `Monad` and `Manager`, we can manage values and recycle them very easily:
+
+```
+import Prelude hiding ( drop )
+
+foo :: (Manager m) => m ()
+foo = do
+  x <- manage 3
+  y <- manage "hey!"
+  drop x
+  drop y
+```
+
+**Notice**: if you want to be able to use the `drop` function, you’ll have to hide `Prelude`’s `drop`.
+
+### `EffectfulManage`
+
+However, we’d like to be able to react to the fact a value is now tracked by our monad, or recycled. That’s
+done through the following typeclass:
+
+```
+class EffectfulManage a s l | a -> s l where
+  spawned :: Managed a -> s
+  lost    :: Managed a -> l
+```
+
+`EffectfulManage a s l` provides an event `s` and an event `l` for `a`. If you’re not comfortable with functional
+dependencies, `a -> s l` means you can’t have two pairs of events for the same type.
+
+Let’s take an example.
+
+```
+data IntSpawned = IntSpawned (Managed Int)
+data IntLost = IntLost (Managed Int)
+
+instance EffectfulManage Int IntSpawned IntLost where
+  spawned = IntSpawned
+  lost = IntLost
+```
+
+Pretty simple. Now, there’re two function to react to such events:
+
+```
+spawn :: (Manager m,EffectfulManage a s l,Effect s m) => a -> m (Managed a)
+lose :: (Manager m,EffectfulManage a s l,Effect l m) => Managed a -> m ()
+```
+
+`spawn a` manages the value `a`, returning its *managed* version, and as you can see in the type signature, have
+an effect of type `s`, which is the *spawned* effect. `lost a` takes a managed value, drop it, and emit the
+corresponding `l` event.
+
+In our case, with our `Int`, we can specialize both the functions this way:
+
+```
+spawn :: (Manager m,EffectfulManage Int IntSpawned IntLost,Effect IntSpawned m) => Int -> m (Managed Int)
+lost :: (Manager m,EffectfulManage Int IntSpawned IntLost,Effect IntLost m) => Managed Int -> m ()
+```
+
+Let’s write a simple example:
+
+```
+instance (Functor m,Monad m) => Manager (StateT [H] m) where
+  manage x = fmap (flip Managed x) (gets head <* modify tail)
+  drop (Managed h _) = modify $ (:) h
+
+-- a possible backend...
+instance Effect IntSpawned (StateT [H] IO) where
+  react (IntSpawned (Managed h i)) = liftIO . putStrLn $ "int has spawned:" ++ show i
+
+instance Effect IntLost (StateT [H] IO) where
+  react (IntLost (Managed h i)) = liftIO . putStrLn $ "int lost :" ++ show i
+```
+
+# In the end
+
+This is being implemented in **photon**, and I think it’s a good start. I once wanted to use **pipes**, but
+a 3D engine is not a streaming problem: it’s a reactive problem. Maybe FRP could be more elegant, I don’t
+know – the `H` type is not the most elegant thing ever, but it works fine.
+
+What do you think folks?
+
+
+
+[^FRP]: Functional Reactive Programming
