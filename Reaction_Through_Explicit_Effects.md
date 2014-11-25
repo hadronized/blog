@@ -215,6 +215,7 @@ Let’s use that. I use explicit types because I’m in *ghci*:
 (10.0,0)
 
 > `flip runState 0 (bar 314 :: State Int Float)`
+
 (17.720045,0)
 
 As you can see, we can have effects without `IO`. In that case, it was pretty simple. But since
