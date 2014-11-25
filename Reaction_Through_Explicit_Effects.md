@@ -196,27 +196,27 @@ Let’s use that. I use explicit types because I’m in *ghci*:
 
 > `flip runState 0 (foo :: State Int String)`
 
-("foo",314)
+> ("foo",314)
 
 > `flip runState 0 (bar 0 :: State Int Float)`
 
-(0.0,3)
+> (0.0,3)
 
 > `flip runState 0 (bar 10 :: State Int Float)`
 
-(3.1622777,3)
+> (3.1622777,3)
 
 > `flip runState 0 (bar 99 :: State Int Float)`
 
-(9.949874,3)
+> (9.949874,3)
 
 > `flip runState 0 (bar 100 :: State Int Float)`
 
-(10.0,0)
+> (10.0,0)
 
 > `flip runState 0 (bar 314 :: State Int Float)`
 
-(17.720045,0)
+> (17.720045,0)
 
 As you can see, we can have effects without `IO`. In that case, it was pretty simple. But since
 it’s abstract to any `Monad`, we could implement effects in `IO`, specific ones.
@@ -227,34 +227,48 @@ Let’s see an example in `IO`.
 
 > `foo`
 
-set to 314
-"foo"
+> set to 314
 
-> bar 0
+> "foo"
 
-succ!
-succ!
-succ!
-0.0
+> `bar 0`
 
-> bar 10
+> succ!
 
-succ!
-succ!
-succ!
-3.1622777
+> succ!
 
-> bar 99
+> succ!
 
-succ!
-succ!
-succ!
-9.949874
+> 0.0
 
-> bar 100
+> `bar 10`
 
-10.0
+> succ!
 
-> bar 314
+> succ!
 
-17.720045
+> succ!
+
+> 3.1622777
+
+> `bar 99`
+
+> succ!
+
+> succ!
+
+> succ!
+
+> 9.949874
+
+> `bar 100`
+
+> 10.0
+
+> `bar 314`
+
+> 17.720045
+
+As you can see, because our `foo` and `bar` functions are polymorphic, we can use them with any types
+implementing the wished effects! That’s pretty great because it enables us to write our code in an
+abstract way, and interpret it with backends.
