@@ -83,6 +83,62 @@ effects. We’d like to be able to explicitely say *“Hey, I can have that effe
 # Reaction: Part 1 – Explicit effects
 
 Reacting to something requires activation. Do you know the
-[observer design pattern](http://en.wikipedia.org/wiki/Observer_pattern)?
+[observer design pattern](http://en.wikipedia.org/wiki/Observer_pattern)? That is an interesting design pattern
+everyone should know. It’s very powerful since it enables you to run actions when an observed event is generated.
+You have to explicitely describe what actions and/or objects you want to observe. That is commonly done via
+two important things:
 
-[^ref_transparency]: 
+  - implementing an *interface* that exports the *event handlers* interface;
+  - explicitely interleaving your observed code with calls to the abstract *event handlers*.
+
+Let’s take an example, still in **C++**:
+
+```
+// this is the interface used to react to events
+class FooObserver {
+  FooObserver(void) {}
+  virtual ~FooObserver() = 0;
+  
+  virtual void on_fire(Direction const &dir) = 0;
+  virtual void on_set_a(int oldValue, int newValue) = 0;
+  virtual void on_set_b(std::string const &oldValue, std::string const &newValue) = 0;
+};
+
+class Foo {
+private:
+  int _a;
+  std::string _b;
+  std::list<FooObserver&> _observers; // all observers that will react to events
+  
+public:
+  Foo(void) : _a(0), _b("") {}
+  ~Foo(void) {}
+  
+  void addObserver(Observer &observer) {
+    _observers.push_back(observer);
+  }
+  
+  void fire(Direction const &dir) {
+    // use dir
+    for (auto observer : _observers)
+      observer.on_fire(dir); // notify all observers something has happenned
+  }
+  
+  void setA(int a) {
+    _a = a;
+    for (auto observer : _observers)
+      observer.on_set_a(_a, a); // notify all observers something has happenned
+  }
+  
+  void setB(std::string const &b) {
+    _b =  b;
+    for (auto observer : _observers)
+      observer_on_set_b(_b, b); // notify all observers something has happenned
+  }
+};
+```
+
+If we want to react to events emmitted by an object of type `Foo`, we just have to create a new type
+that inherits from `FooObserver`, implement its abstract methods and register an object of our type
+so that the value can call it when it has to emmit events. That’s pretty great, but it has a lot of
+side effects, and we’re gonna try to abstract that away.
