@@ -16,7 +16,7 @@ things.
 A **side effect** is a big word to describe an *effect* a function has that mutates something out of scope. For
 instance, you could picture a function modifying a global state, environment or any kind of “*remote*” value.
 
-Another way to understand what a side effect is is to look at
+Another way to understand what a side effect is to look at
 [referential transparency](http://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29). If you
 need *assumptions* to be able to say what a piece of code does, you might be in the presence of a side effect.
 For instance, look at this **C++** snippet:
