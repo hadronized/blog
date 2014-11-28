@@ -90,7 +90,8 @@ varIn  :: Varying i o a -> Shader i (Expr a)
 varOut :: Varying i o a -> Shader o (Expr a)
 ```
 
-`varIn` can be used to turn a varying into an expression that represents the input part.
+`varIn` is used to turn a varying into an expression that represents the input part and `varOut` truns a varying into an
+expression that represents the output part. You can then use the `Expr a` the way you want in the corresponding shader.
 
 
 
