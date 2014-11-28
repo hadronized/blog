@@ -67,6 +67,27 @@ you’ll get a compilation error, because the frequencies won’t match.
 
 **Note: the `CPU a` typeclass constraint is there to only allow ash-supported types to be used as varyings.**
 
+# Using varyings
+
+Imagine you have a varying `vertPosVarying` you’ve gotten this way in your pipeline:
+
+```haskell
+vertPosVarying <- varying Frag Vert
+```
+
+Now, let’s use that in a vertex shader and a fragment shader.
+
+## Turning varyings into expressions
+
+There’s two functions to turn a `Varying i o a` into `Expr a`:
+
+```haskell
+varIn  :: Varying i o a -> Shader i (Expr a)
+varOut :: Varying i o a -> Shader o (Expr a)
+```
+
+`varIn` can be used to turn a varying into an expression that represents the input part.
+
 
 
 [^frequency]: The frequency of a shader stage gives how often it’ll be invoked (or for each object it will).
