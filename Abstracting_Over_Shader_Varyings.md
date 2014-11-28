@@ -75,6 +75,10 @@ Imagine you have a varying `vertPosVarying` you’ve gotten this way in your pip
 vertPosVarying <- varying Frag Vert
 ```
 
+Because I should have done a graphic designer ~carreer~ study, here is an awful diagram showing the concept:
+
+![](http://phaazon.net/pub/ash%20%E2%80%93%20Varying.png)
+
 Now, let’s use that in a vertex shader and a fragment shader.
 
 ## Turning varyings into expressions
