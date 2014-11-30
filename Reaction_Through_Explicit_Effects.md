@@ -148,9 +148,9 @@ public:
 };
 ```
 
-If we want to react to events emmitted by an object of type `Foo`, we just have to create a new type
+If we want to react to events emitted by an object of type `Foo`, we just have to create a new type
 that inherits from `FooObserver`, implement its abstract methods and register an object of our type
-so that the value can call it when it has to emmit events. That’s pretty great, but it has a lot of
+so that the value can call it when it has to emit events. That’s pretty great, but it has a lot of
 side effects, and we’re gonna try to abstract that away.
 
 # Reaction: Part 2 – Explicit effects in **Haskell**
