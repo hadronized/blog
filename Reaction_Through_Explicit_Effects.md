@@ -87,19 +87,19 @@ That’s the same thing for inputs, reading files, creating files and so on and 
 to be able to deal with those cases: `IO a`. It’s a polymorphic type that can look at the **real world**. You
 can’t but `IO a` can.
 
-We have `IO a` to explicitely deal with side effects, that’s cool. However, `IO` represents **any** kind of side
-effects. We’d like to be able to explicitely say *“Hey, I can have that effect”*.
+We have `IO a` to explicitly deal with side effects, that’s cool. However, `IO` represents **any** kind of side
+effects. We’d like to be able to explicitly say *“Hey, I can have that effect”*.
 
 # Reaction: Part 1 – Explicit effects in imperative languages
 
 Reacting to something requires activation. Do you know the
 [observer design pattern](http://en.wikipedia.org/wiki/Observer_pattern)? That is an interesting design pattern
 everyone should know. It’s very powerful since it enables you to run actions when an observed event is generated.
-You have to explicitely describe what actions and/or objects you want to observe. That is commonly done via
+You have to explicitly describe what actions and/or objects you want to observe. That is commonly done via
 two important things:
 
   - implementing an *interface* that exports the *event handlers* interface;
-  - explicitely interleaving your observed code with calls to the abstract *event handlers*.
+  - explicitly interleaving your observed code with calls to the abstract *event handlers*.
 
 Let’s take an example, still in **C++**:
 
