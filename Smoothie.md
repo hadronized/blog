@@ -9,30 +9,30 @@ I’m rushing on my 3D application so that I can finish something to show up, bu
 I’m not sure I’ll have enough spare time. That being said, I need to be able to
 represent smooth moves and transitions without any tearing. I had a look into a
 few **Haskell** *spline* libraries, but I haven’t found anything
-interesting – or non-discontinued.
+interesting – or not discontinued.
 
-Because I do need splines, I decided to write my own package. Meet
-[smoothie](https://github.com/phaazon/smoothie), my **BSD3** Haskell spline
-library.
+Because I do need splines, I decided to write my very own package. Meet
+[smoothie](https://hackage.haskell.org/package/smoothie), my **BSD3** Haskell
+spline library.
 
 ## Why splines?
 
-A /spline/ is a curve defined by several polynomials. It has several uses, like
+A *spline* is a curve defined by several polynomials. It has several uses, like
 vectorial graphics, signal interpolation, animation tweening or simply plotting
 a spline to see how neat and smooth it looks!
 
 Splines are defined using polynomials. Each polynomials is part of the curve and
-connected they’re connected one-by-one. Depending on which polynomial(s) you
-chose, you end up with a different shape.
+connected one-by-one. Depending on which polynomial(s) you chose, you end up
+with a different shape.
 
 For instance, 1-degree polynomials are used to implement straight lines.
 
 ![](http://phaazon.net/pub/linear_spline.png)
 
-As you can see, we can defined a few points, and interpolate in between. This is
+As you can see, we can define a few points, and interpolate in between. This is
 great, because we can turn a *discrete* set of points into lines.
 
-Even better, we could use 3-degree polynomials or cosine function to make each
+Even better, we could use 3-degree polynomials or cosine functions to make each
 part of the spline smoother:
 
 ![](http://phaazon.net/pub/spline.png)
@@ -67,18 +67,17 @@ Haskell).
 So, if you have a spline and a sampling value, the idea is that sampling the
 spline with `startSampler` gives you the first point, and sampling with
 `t` with `t > startSampler` gives you another point, interpolated using points
-of the spline. It could use two points, three, four or more. It actually depends
-on the polynomials you use, and the interpolating method.
+of the spline. It could use two points, three, four or even more. It actually
+depends on the polynomials you use, and the interpolating method.
 
-In [smoothie](https://github.com/phaazon/smoothie), sampling values have types
-designed by `s`.
+In [smoothie](https://hackage.haskell.org/package/smoothie), sampling values
+have types designed by `s`.
 
 ### Control points
 
 A spline is made of points. Those points are called **control points** and
-[smoothie](https://github.com/phaazon/smoothie) uses `CP s a` to refer to them,
-where `s` is the sampling type and `a` the carried value.
-
+[smoothie](https://hackage.haskell.org/package/smoothie) uses `CP s a` to refer
+to them, where `s` is the sampling type and `a` the carried value.
 
 Although they’re often used to express the fact that the curve should pass
 through them, they don’t have to lie on the curve itself. A very common and
@@ -88,7 +87,8 @@ ultra useful kind of spline is the B-spline.
 
 With that kind of spline, the property that the curve passes through the control
 points doesn’t hold. It passes through the first and last ones, but the ones
-in between are used to *shape* it, a bit like **magnets**.
+in between are used to *shape* it, a bit like **magnets** attract things around
+them.
 
 Keep in mind that **control points** are very important and used to define the
 main aspect of the curve.
@@ -99,36 +99,38 @@ Polynomials are keys to spline interpolation. They’re used to *deduce* sampled
 points. Interpolation is a very general term and used in plenty of domains. If
 you’re not used to that, you should inquiry about
 [linear interpolation](http://en.wikipedia.org/wiki/Linear_interpolation) and
-[cubic interpolation](http://en.wikipedia.org/wiki/Cubic_Hermite_spline).
+[cubic interpolation](http://en.wikipedia.org/wiki/Cubic_Hermite_spline), which
+are a very good start.
 
 Polynomials are denoted by `Polynomial s a` in
-[smoothie](https://github.com/phaazon/smoothie), where `s` and `a` have the same
-meaning than in `CP s a`.
+[smoothie](https://hackage.haskell.org/package/smoothie), where `s` and `a` have
+the same meaning than in `CP s a`.
 
 ## Getting started with smoothie
 
 ### Types and constraints
 
-[smoothie](https://github.com/phaazon/smoothie) has then three important types:
+[smoothie](https://hackage.haskell.org/package/smoothie) has then three important
+types:
 
-  - `CP s a`
-  - `Polynomial`
+  - `CP s a`, the control points
+  - `Polynomial`, the polynomials used to interpolate between control points
   - `Spline s a`, of course
 
 The whole package is parameterized by `s` and `a`. As said earlier, `s` is very
 likely to require an `Ord` constraint. And `a`… Well, since we want to represent
 points, let’s wonder: which points? What kind of points? Why even *“points”*?
 That’s a good question. And this is why you may find
-[smoothie](https://github.com/phaazon/smoothie) great: it doesn’t actually know
-anything about points. It accepts **any kind values**. Any? Almost. Any values
-that are in an **additive group**.
+[smoothie](https://hackage.haskell.org/package/smoothie) great: it doesn’t
+actually know anything about points. It accepts **any kind of values**. Any?
+Almost. Any values that are in an **additive group**.
 
 > *“What the…”*
 
-I won’t go into details, I’ll just vulgarize them so that you get quickly get
-your feet wet. That constraint, when applied to **Haskell**, makes `a` to be
-an endofunctor – i.e. `Functor` and additive `Additive`. It also requires it
-to be a first-class value – i.e. its kind should be `* -> *`.
+I won’t go into details, I’ll just vulgarize them so that you get quickly your
+feet wet. That constraint, when applied to **Haskell**, makes `a` to be
+an endofunctor – i.e. `Functor` – and additive – i.e. `Additive`. It also
+requires it to be a first-class value – i.e. its kind should be `* -> *`.
 
 With `Functor` and `Additive`, we can do two important things:
 
@@ -141,8 +143,8 @@ known for [vector spaces](http://en.wikipedia.org/wiki/Vector_space).
 
 The fun consequence is that providing correct instances to `Functor` and
 `Additive` will make your type useable with
-[smoothie](https://github.com/phaazon/smoothie)! You might also have to
-implement `Num` and `Ord` as well, though.
+[smoothie](https://hackage.haskell.org/package/smoothie) as carried value in the
+spline! You might also have to implement `Num` and `Ord` as well, though.
 
 ### Creating a spline
 
@@ -155,10 +157,11 @@ spline :: (Ord a, Ord s) => [(CP s a, Polynomial s a)] -> Spline s a
 It takes a list of **control points** associated with **polynomials** and
 outputs a **spline**. That requires some explainations… When you’ll be sampling
 the spline,
-[smoothie](https://github.com/phaazon/smoothie) will look for which kind of
-interpolation method it has to use. This is done by the lower nearest control
-point to the sampled value. Basically, a pair `(cp,polynomial)` defines a new
-point and the interpolation method to use for the curve ahead of the point.
+[smoothie](https://hackage.haskell.org/package/smoothie) will look for which
+kind of interpolation method it has to use. This is done by the lower nearest
+control point to the sampled value. Basically, a pair `(cp,polynomial)` defines
+a new point and the interpolation method to use for the curve ahead of the
+point.
 
 Of course, the latest point’s polynomial won’t be used. You can set whatever you
 want then – protip: you can even set `undefined` because of laziness.
@@ -183,7 +186,6 @@ let cp1 = CP 3.341 $ V2 0.8 10.5
 
 Now, let’t attach a polynomial to them!
 
-
 #### Hold that for me please
 
 The simplest polynomial – wich is actually not a polynomial, but heh, don’t look
@@ -193,9 +195,9 @@ picture that as a staircase function:
 
 ![](http://phaazon.net/pub/hold_spline.gif)
 
-You might say that’s useless, it’s actually not, it’s even pretty nice. Imagine
-you want to attach your camera position such a curve. It will make the camera
-*jump* in space, wich could be desirable for flash looks!
+You might say that’s useless; it’s actually not; it’s even pretty nice. Imagine
+you want to attach your camera position onto such a curve. It will make the
+camera *jump* in space, which could be desirable for flash looks!
 
 Use the `hold` `Polynomial` to use such a behavior.
 
@@ -212,10 +214,38 @@ transitions.
 
 #### Highway to the danger zone
 
-If you’re crazy, you can experiment around with `linearBy`, wich, basically, is
+If you’re crazy, you can experiment around with `linearBy`, which, basically, is
 a 1-degree polynomial if you pass `id`, but will end up in most complex shapes
 if you pass another function – `(s -> s)`. Dig in documentation on *hackage* for
 further information.
+
+#### Sampling our spline
+
+Ok, let’s use a linear interpolation to sample our spline:
+
+```haskell
+let spl = spline [(cp0,linear),(cp1,hold)]
+```
+
+> *Note: I used `hold` as a final polynomial because I don’t like using
+`undefined`.*
+
+Ok, let’s see how to sample that.
+[smoothie](https://hackage.haskell.org/package/smoothie) exports a convenient
+function for sampling:
+
+```haskell
+smooth :: Ord s => Spline s a -> s -> Maybe a
+```
+
+`smooth spl s` takes the sampling value `s` and maybe interpolate it in the
+`spl` spline.
+
+> *“Maybe? Why aren’t you sure?”*
+
+Well, that’s pretty simple. In some cases, the curve is not defined at the
+sampling value you pass. Before the first point and after, basically. In those
+cases, you get `Nothing`.
 
 ## That’s not the end
 
