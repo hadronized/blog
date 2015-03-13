@@ -330,7 +330,7 @@ input! Let’s see what we can do with that.
 
 ```haskell
 camera :: Behavior t [Input] Camera
-camera = Behavior $ \_ events -> treatEvents events
+camera = Behavior (const treatEvents)
   where
     treatEvents events
       | W `elem` events = Camera $ V3 0 0 (-0.1)
@@ -348,4 +348,30 @@ event occurs. We’ll need recursion so that we can ping-pong between
 behaviors. Let’s write the `idleing` behavior:
 
 ```haskell
+idleing :: Behavior t ([Input],Camera) Camera
+idleing = Behavior (const snd)
 ```
+
+That behavior requires as input our `Input` events list and a
+`Camera` and simply returns the `Camera`. Pretty nice.
+
+How do we switch then? We need `Event`. Consider this:
+
+    newtype Event t a = Event { getEvent :: (t,a) }
+
+In order to switch, need `a` to be a behavior. In the first place,
+we’ll create `Event t [Input]` and pass them as input the behavior
+network. How could we change the `[Input]` to something more 
+interesting? Simple: [Functor](https://wiki.haskell.org/Functor)!
+
+```haskell
+instance Functor (Event t) where
+  fmap f (Event e) = Event (fmap f e)
+```
+
+> **Note**: because of `Event t a` being a `newtype`, you should
+rather use the GHC `GeneralizedNewtypeDeriving` extension to
+automatically let GHC infer the instance for you.
+
+    newtype Event t a = Event { getEvent :: (t,a) } deriving (Functor)
+
