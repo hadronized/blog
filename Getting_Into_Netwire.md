@@ -169,6 +169,8 @@ start with an example so that we can figure out the problem.
 
 ## Initial program
 
+### Setting up
+
 Let’s say we want to be able to control a camera with a keyboard:
 
   - `W` would go forward
@@ -205,3 +207,18 @@ We use `[Input]` because we could have several events at the same time
 in order to abstract over event polling. In your program, you won’t use
 `getLine` but a function from [SDL](https://hackage.haskell.org/package/sdl2)
 or similar.
+
+And the camera:
+
+```haskell
+newtype Camera = Camera { cameraPosition :: V3 Float } deriving (Eq,Read,Show)
+```
+
+`V3` is a type from [linear](https://hackage.haskell.org/package/linear).
+You’ll need that lib then, and `import Linear.V3` to make the `Camera` compile.
+
+Ok, let’s react to events!
+
+### First attempt: the regular and naive one
+
+The idea is to use some kind of state we’ll change on an event.
