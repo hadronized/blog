@@ -266,5 +266,86 @@ in your `AppSt` – I did that once, it was a pretty harsh experience.
 Furthermore, imagine you want to add a new behavior to the camera, like
 being able to handle the mouse cursor move – `Input` being augmented, of
 course. You’d need to change / add lines in our `updateAppSt` function.
-Imagine how messy `updateAppSt` would be… That would, basically, gathers
+Imagine how messy `updateAppSt` would be… That would, basically, gather
 all reactions in a single function. Not neat.
+
+## Adding FRP
+
+FRP enables us to use our reactive values as if they are regular values.
+You can add reactive values, you can substract them, combine them in any
+way you want. The semantics of your values should be true for the
+reactive values.
+
+Typically, with FRP, you don’t have event handlers anymore. The codebase
+can then grow sanely without having to accumulate big state every now
+and then. FRP applications scale and compose pretty well.
+
+Let’s start with a simple FRP implementation for our example.
+
+### Naive FRP implementation
+
+Let’s start with the behavior:
+
+    newtype Behavior t a = Behavior { stepBehavior :: t -> a }
+
+How could we implement our camera’s behavior with that? We actually
+can’t since we don’t have any ways to pass events.
+
+> *“I guess we could build a `Behavior t Camera` by passing our `Input`
+> to the initial function?”*
+
+Something like this?
+
+```haskell
+camera inputs = Behavior $ \_ -> -- implement the behavior with inputs
+```
+
+That could be a way to go, yeah. However, how would you implement
+switching with that? Remember the type of `until`:
+
+    until :: Behavior t a -> Event (Behavior t a) -> Behavior t a
+
+`camera` is not a behavior, it’s a function from events to a
+behavior. You have to apply the events on `camera` in order to get its
+behavior. Once you’ve done that, you cannot pass events to the next
+behavior. What a pity. That is more a configured behavior, yeah.
+
+With the current `Behavior t a` implementation, a behavior network is
+reduced to a function `t -> a`, basically. Then, the only stimulus you
+got from outside is… *time*. We lack something.
+
+### Arrowized behaviors
+
+> *“A way to forward events?”*
+
+Yes! But more mainly, a way to augment our `Behavior t a` with inputs!
+Don’t get me wrong, we are not talking about a reactive *value* here.
+We are talking about a reactive *relationship*:
+
+    newtype Behavior t a b = Behavior { stepBehavior :: t -> a -> b }
+
+That’s way better! Our new behavior represents a relationship between
+two reactive objects. The `b` is our old `a`, and the new `a` is the
+input! Let’s see what we can do with that.
+
+```haskell
+camera :: Behavior t [Input] Camera
+camera = Behavior $ \_ events -> treatEvents events
+  where
+    treatEvents events
+      | W `elem` events = Camera $ V3 0 0 (-0.1)
+      | S `elem` events = Camera $ V3 0 0 0.1
+      | otherwise = Camera $ V3 0 0 0
+```
+
+That is not exactly what we intented to express. Here, if we push the
+`W` button, we just put the camera in `V3 0 0 (-0.1)`, while we’d like
+to move it forward. That is due to the fact we need switching.
+
+The idea is the following: the initial behavior is idleing. We just
+don’t do anything. Then, we switch to a given behavior when a given
+event occurs. We’ll need recursion so that we can ping-pong between
+behaviors. Let’s write the `idleing` behavior:
+
+```haskell
+```
