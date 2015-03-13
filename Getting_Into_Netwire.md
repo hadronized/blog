@@ -73,5 +73,72 @@ example. Imagine you want to represent make a cube rotating around the *X axis*.
 can represent the actual rotation with a `Behavior Rotation`, because the angle of
 rotation is linked to the time:
 
-    rotationAngle = Behavior $ \t -> rotationFromAngle xAxis t
+    rotationAngle :: Behavior Float Rotation
+    rotationAngle = Behavior $ \t -> rotate xAxis t
 
+Pretty simple, see?! However, it’d would more convenient if we could chose the type
+of time. We don’t really know what the time will be in the final application. It
+could be the current UTC time, it could be an integral time (think of a stepped
+discrete simulation), it could be the monotonic time, the system time, something
+that we don’t even know. So let’s make our `Behavior` type more robust:
+
+    newtype Behavior t a = Behavior { stepBehavior :: t -> a }
+
+Simple change, but nice improvement.
+
+That is the typical way to picture a *behavior*. However, we’ll see later that
+the implementation is way different that such a naive one. Keep on reading.
+
+### Events
+
+An event is *something happening at some time*. Applied to FRP, an event is a pair
+of time – giving the time of occurrence – and a carried value:
+
+    newtype Event t a = Event { getEvent :: (t,a) }
+
+For instance, we could create an event that yields a rotation of 90° around X
+at 35 seconds:
+
+    rotate90XAt35s :: Event Float Rotation
+    rotate90XAt35s = Event (35,rotate xAxis $ 90 * pi / 180)
+
+Once again, that’s the naive way to look at events. Keep in mind that events have
+time occurrences and carry values.
+
+### Behavior switch
+
+You switch your behavior every time. Currently, you’re reading this paper, but you
+may go grab some food, go to bed, go to school or whatever you like afterwards.
+You’re already used to behavior switching because that’s what we do every day in
+a lifetime.
+
+However, applying that to FRP is another thing. The idea is to express this:
+
+> *“Given a first behavior, I’ll switch to another behavior when a given event
+> occurs.”*
+
+This is how we express that in FRP:
+
+    switch :: Behavior t a -> Event t (Behavior t a) -> Behavior t a
+
+Let me decrypt `switch` for you.
+
+The first parameter, a `Behavior t a`, is the
+initial behavior. For instance, currently, you’re reading. That could be the
+first behavior you’d pass to `switch`.
+
+The second parameter, an `Event t (Behavior t a)`, is an event that yields a
+new `Behavior t a`. Do you start to get it? No? Well then:
+
+    `switch reading finished`
+
+`reading` is the initial behavior, and `finished` is an event that occurs when
+you’re done reading. `switch reading finished` is then a behavior that equals
+to `reading` until `finished` happens. When it does, `switch reading finished`
+extracts the behavior from the event, and uses it instead.
+
+I tend to think `switch` is a bad name, and I like naming it `until`:
+
+    reading `until` finished
+
+Nicer isn’t it?! :)
