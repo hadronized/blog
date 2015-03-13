@@ -6,7 +6,7 @@ and is a pretty decent way to make *event-driven* programs.
 
 The problem with FRP is that, beside [Wikipedia](http://en.wikipedia.org/wiki/Functional_reactive_programming),
 [Haskell.org](https://wiki.haskell.org/Functional_Reactive_Programming) and a
-few of other resources, like [Conal Elliott push-pull](http://conal.net/papers/push-pull-frp/)
+few of other resources, like [Conal Elliott](http://conal.net/papers/push-pull-frp/)
 papers, we lack learning materials. Getting into FRP is really not trivial
 and because of the lack of help, you’ll need to be brave to get your feet
 wet.
@@ -72,6 +72,8 @@ A behavior is a simple function from time (`Double`) to a given value. Let’s t
 example. Imagine you want to represent make a cube rotating around the *X axis*. You
 can represent the actual rotation with a `Behavior Rotation`, because the angle of
 rotation is linked to the time:
+
+![](http://phaazon.net/pub/human_behavior.jpg)
 
     rotationAngle :: Behavior Float Rotation
     rotationAngle = Behavior $ \t -> rotate xAxis t
@@ -375,3 +377,11 @@ automatically let GHC infer the instance for you.
 
     newtype Event t a = Event { getEvent :: (t,a) } deriving (Functor)
 
+Then, we can use the `Functor` instance to change the type of the
+carried value of the event. That’s great because we don’t change the
+occurrence time, only the carried value. Transforming events is really
+important in FRP. We can then transform the `[Input]` into a single
+behavior:
+
+```haskell
+```
