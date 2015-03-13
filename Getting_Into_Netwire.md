@@ -19,7 +19,7 @@ I’ll be talking about [netwire](https://hackage.haskell.org/package/netwire),
 which is not the *de-facto* library to use in Haskell, because eh… we don’t
 have any yet. However, netwire exposes a lot of very interesting concepts and
 helped me to understand more general abstractions. I hope it’ll help you as
-well.
+well. :)
 
 # The FRP Thing
 
@@ -142,3 +142,66 @@ I tend to think `switch` is a bad name, and I like naming it `until`:
     reading `until` finished
 
 Nicer isn’t it?! :)
+
+### Stepping
+
+Stepping is the act of passing the input – i.e. time `t` in our case – down
+to the `Behavior t a` and extract the resulting `a` value. Behaviors are
+commonly connected to each other and form a *reactive network*.
+
+That operation is also often refered to as *reactimation* in certain
+implementations, but is more complex than just stepping the world. You don’t
+have to focus on that yet, just keep in mind the `reactimate` function. You
+might come across it at some time.
+
+# Before going on…
+
+Everything you read in that paper until now was just pop-science so that you
+understand the main idea of what FRP is. The next part will cover a more
+decent and real-world implementation and use of FRP, especially efficient
+implementations.
+
+# Let’s build a FRP library!
+
+The first common error a lot of programmers make is trying to write
+algorithms or libraries to solve a problem they don’t even know. Let’s then
+start with an example so that we can figure out the problem.
+
+## Initial program
+
+Let’s say we want to be able to control a camera with a keyboard:
+
+  - `W` would go forward
+  - `S` would go backward
+  - `A` would left strafe
+  - `D` would right strafe
+  - `R` would go up
+  - `F` would go down
+
+Let’s write the `Input` type:
+
+```haskell
+data Input
+  = W
+  | S
+  | A
+  | D
+  | R
+  | F
+    deriving (Eq,Read,Show)
+```
+
+Straight-forward. We also have a function that polls events from `IO`:
+
+```haskell
+pollEvents :: IO [Input]
+pollEvents = fmap treatLine getLine
+  where
+    treatLine = concatMap (map fst . reads) . words
+```
+
+We use `[Input]` because we could have several events at the same time
+(imagine two pressed keys). The function is using dumb implementation
+in order to abstract over event polling. In your program, you won’t use
+`getLine` but a function from [SDL](https://hackage.haskell.org/package/sdl2)
+or similar.
