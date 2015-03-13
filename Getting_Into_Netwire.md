@@ -182,6 +182,8 @@ Let’s say we want to be able to control a camera with a keyboard:
   - `R` would go up
   - `F` would go down
 
+![](http://phaazon.net/pub/camera_drawing.gif)
+
 Let’s write the `Input` type:
 
 ```haskell
