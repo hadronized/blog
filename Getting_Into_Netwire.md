@@ -190,6 +190,7 @@ data Input
   | D
   | R
   | F
+  | Quit
     deriving (Eq,Read,Show)
 ```
 
@@ -211,14 +212,59 @@ or similar.
 And the camera:
 
 ```haskell
-newtype Camera = Camera { cameraPosition :: V3 Float } deriving (Eq,Read,Show)
+newtype Camera = Camera { _cameraPosition :: V3 Float } deriving (Eq,Read,Show)
+
+makeLenses ''Camera
 ```
 
 `V3` is a type from [linear](https://hackage.haskell.org/package/linear).
 You’ll need that lib then, and `import Linear.V3` to make the `Camera` compile.
+You’ll also need [lens](https://hackage.haskell.org/package/lens) and the GHC
+extension `TemplateHaskell` enabled.
 
 Ok, let’s react to events!
 
 ### First attempt: the regular and naive one
 
-The idea is to use some kind of state we’ll change on an event.
+The idea is to use some kind of state we’ll change on an event. In our case the
+state is pretty simple:
+
+```haskell
+data AppSt = AppSt {
+    _appCamera :: Camera
+  } deriving (Eq,Read,Show)
+  
+makeLenses ''AppSt
+
+updateAppSt :: AppSt -> Input -> Maybe AppSt
+updateAppSt appst input = case input of
+  W -> Just $ appst & appCamera . cameraPosition . _z -~ 0.1
+  S -> Just $ appst & appCamera . cameraPosition . _z +~ 0.1
+  A -> Just $ appst & appCamera . cameraPosition . _x -~ 0.1
+  D -> Just $ appst & appCamera . cameraPosition . _x +~ 0.1
+  F -> Just $ appst & appCamera . cameraPosition . _y -~ 0.1
+  R -> Just $ appst & appCamera . cameraPosition . _y +~ 0.1
+  Quit -> Nothing
+```
+
+A lot of boilerplate on `updateAppSt`, but that doesn’t matter that much.
+The idea is to modify the application state and just return it for all
+inputs but `Quit`, in which case we return `Nothing` to express the wish
+to quit the application.
+
+I’ve been using that idea for a while. It’s simple, nice and neat, because
+we don’t spread `IO` actions in our program logic, which remains then pure.
+That’s a very good way of doing it, and most cases, it’ll even be sufficient.
+However, that idea suffers from a serious issue: *it doesn’t scale*.
+
+Who has only one camera? No one. You have a camera – maybe more than just
+one, lights, objects, terrains, AI, sounds, assets, maps and so on and so
+forth. Our little `AppSt` type would explode as we add objects. That
+*doesn’t scale at all*. You could, though, go on and add all your objects
+in your `AppSt` – I did that once, it was a pretty harsh experience.
+
+Furthermore, imagine you want to add a new behavior to the camera, like
+being able to handle the mouse cursor move – `Input` being augmented, of
+course. You’d need to change / add lines in our `updateAppSt` function.
+Imagine how messy `updateAppSt` would be… That would, basically, gathers
+all reactions in a single function. Not neat.
