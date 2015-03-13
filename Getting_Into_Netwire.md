@@ -132,7 +132,7 @@ first behavior you’d pass to `switch`.
 The second parameter, an `Event t (Behavior t a)`, is an event that yields a
 new `Behavior t a`. Do you start to get it? No? Well then:
 
-    `switch reading finished`
+    switch reading finished
 
 `reading` is the initial behavior, and `finished` is an event that occurs when
 you’re done reading. `switch reading finished` is then a behavior that equals
