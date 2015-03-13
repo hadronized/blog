@@ -75,7 +75,7 @@ rotation is linked to the time:
 
 ![](http://phaazon.net/pub/human_behavior.jpg)
 
-    rotationAngle :: Behavior Float Rotation
+    rotationAngle :: Behavior Double Rotation
     rotationAngle = Behavior $ \t -> rotate xAxis t
 
 Pretty simple, see?! However, it’d would more convenient if we could chose the type
