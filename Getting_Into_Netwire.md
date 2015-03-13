@@ -224,7 +224,7 @@ makeLenses ''Camera
 `V3` is a type from [linear](https://hackage.haskell.org/package/linear).
 You’ll need that lib then, and `import Linear.V3` to make the `Camera` compile.
 You’ll also need [lens](https://hackage.haskell.org/package/lens) and the GHC
-extension `TemplateHaskell` enabled.
+`TemplateHaskell` extension enabled as well as `import Control.Lens`.
 
 Ok, let’s react to events!
 
