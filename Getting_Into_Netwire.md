@@ -322,7 +322,7 @@ got from outside is… *time*. We lack something.
 
 > *“A way to forward events?”*
 
-Yes! But more mainly, a way to augment our `Behavior t a` with inputs!
+Yes! But more mainly, a way to extend our `Behavior t a` with inputs!
 Don’t get me wrong, we are not talking about a reactive *value* here.
 We are talking about a reactive *relationship*:
 
@@ -348,7 +348,7 @@ to move it forward. That is due to the fact we need switching.
 
 The idea is the following: the initial behavior is idleing. We just
 don’t do anything. Then, we switch to a given behavior when a given
-event occurs. We’ll need recursion so that we can ping-pong between
+event occurs. We’ll need recursion so that we can *ping-pong* between
 behaviors. Let’s write the `idleing` behavior:
 
 ```haskell
@@ -363,9 +363,9 @@ How do we switch then? We need `Event`. Consider this:
 
     newtype Event t a = Event { getEvent :: (t,a) }
 
-In order to switch, need `a` to be a behavior. In the first place,
-we’ll create `Event t [Input]` and pass them as input the behavior
-network. How could we change the `[Input]` to something more 
+In order to switch, we need `a` to be a behavior. In the first place,
+we’ll create several `Event t [Input]` and pass them as input to the
+behavior network. How could we change the `[Input]` to something more 
 interesting? Simple: [Functor](https://wiki.haskell.org/Functor)!
 
 ```haskell
@@ -386,4 +386,111 @@ important in FRP. We can then transform the `[Input]` into a single
 behavior:
 
 ```haskell
+inputToBehavior i = case i of
+  W -> Behavior $ \_ (_,cam) -> cam & cameraPosition . _z -~ 0.1
+  S -> Behavior $ \_ (_,cam) -> cam & cameraPosition . _z +~ 0.1
+  A -> -- and so on
+  D -> -- and so forth
+  F -> -- ;)
+  R -> -- ...
+  Quit -> Behavior $ \_ (_,cam) -> cam
 ```
+
+Pretty simple, see? When we push `W`, we go forward forever. We could
+have implemented the function above with another `until` call in order
+to go back to `idleing`, making some kind of behavior loop.
+
+However, switching is fairly poorly implemented here. It’s not very
+efficient, and requires a ton of boilerplate.
+
+## Auto
+
+There is a very cool type out there called `Auto`, used to implement
+[automatons](http://en.wikipedia.org/wiki/Automaton).
+
+    newtype Auto a b = Auto { runAuto :: a -> (b,Auto a b) }
+
+An `Auto a b` is a function-like structure. It has an input and an
+output. The difference with a regular function is the fact it also has
+a secondary output, which is another `Auto a b`. That is, it’s the next
+automaton to be used.
+
+`Auto a b` wraps pretty cool concepts, such as *locally defined states*.
+It’s also a great ally when implementing switching in a FRP system,
+because we can easily state that `Behavior` ≃ `Auto`. A `Behavior` is
+a function from the environment state to the next reactive value, and
+has also another output representing what to do “next”.
+
+Let’s then change our `Behavior` type to make it look like a bit more
+like `Auto`:
+
+    newtype Behavior t a b = Behavior { stepBehavior :: t -> a -> (b,Behavior t a b) }
+
+Yeah, that’s it! That’s a pretty good start!
+
+## Useful abstractions
+
+Before going on, I’d like to introduce those scary abstractions you are
+afraid of. Because they’re actually not. They’re **all simple**. At least
+for Haskell purposes.
+
+**Note: I do know we could simply use the GeneralizedNewtypeDeriving`
+extension but I want to detail all the implementation, so we’ll see
+how to implement all the nice abstractions.**
+
+### Category
+
+A [category](http://en.wikipedia.org/wiki/Category_%28mathematics%29)
+basically exposes two concepts: composition and identity. In our case,
+the identity represents a constant behavior in time and the composition
+composes two behaviors in time. Let’s implement `Category` by providing
+implementation for both `id` and `(.)`:
+
+```haskell
+instance Category (Behavior t) where
+  id = Behavior $ \t a -> (a,id)
+  x . y = Behavior $ \t a ->
+    let (yr,yn) = stepBehavior y t a
+        (xr,xn) = stepBehavior x t yr
+    in (xr,xn . yn)
+```
+
+### Arrow
+
+[Arrows](https://www.haskell.org/arrows) are a generalization of functions
+along the axis of computation. A computation has inputs and outputs. So
+does a behavior.
+
+Although arrows are not really used in Haskell because they’re scary, they’re
+ultra simple (themselves and the common combinators built over the
+abstraction) and useful in some cases.
+
+In order to implement arrows, we need to provide code for both the `arr`
+function, which type is `arr :: (Arrow a) => (b -> c) -> a b c` and
+`first`, which type is `first :: (Arrow a) => a b c -> a (b,d) (c,d)`.
+`arr` is used to lift a common function into the arrowized version, and
+`first` takes an arrow which takes a value as input and exposes an arrow
+that takes a pair as input, applying the given function on the *first*
+value of the pair. Let’s implement that:
+
+```haskell
+instance Arrow (Behavior t) where
+  arr f = fix $ \r -> Behavior $ \t a -> (f a,r)
+  first f = fix $ \r -> Behavior $ \t (b,d) ->
+    let (c,fn) = stepBehavior f t b
+    in ((c,d),first fn)
+```
+
+### Functor
+
+You might already know that one since I talked about it a few lines ago,
+but let’s write the instance for our `Behavior`:
+
+```haskell
+instance Functor (Behavior t a) where
+  fmap f b = Behavior $ \t a ->
+    let (br,bn) = stepBehavior b t a
+    in (f br,fmap f bn)
+```
+
+Pretty cool eh?
