@@ -623,3 +623,71 @@ inhibit anymore.
 
 > **Exercise: write the implementatof of `(>~)`, our version
 > for netwire’s `(>--)`.**
+
+## Behaviors revisited
+
+Now you have a better idea of how you could implement a
+behavior, let’s talk about netwire’s one.
+
+netwire’s behavior type is called `Wire`. It’s actually:
+
+    Wire s e m a b
+
+`s` is the *session* time – it’s basically a type that’s used
+to extract time. `e` is the inhibition value. `m` is a inner
+monad – yes, you can use monadic code within netwire, which is
+not really useful actually, except for `Reader`, I guess. And
+`a` and `b` are respectively inputs and outputs.
+
+> *“What is that inhibition type?”*
+
+Yeah, netwire doesn’t use `Maybe` for inhibition. Picture 
+`Wire` as:
+
+    newtype Wire s e m a b = Wire { stepWire :: s -> a -> m (Either e (b,Wire s e m a b)) }
+
+Instead of using `Maybe (b,Wire s e m a b)`, it uses `Either`.
+Some functions require `e` to be a `Monoid`. I guess netwire uses
+that to accumulate during inhibition. I don’t see decent use
+cases of such a feature, but it’s there. I tend to use this kind
+of wire in all my uses of netwire:
+
+```haskell
+Wire s () Identity a b -- I think this is the most common type of wire
+```
+
+Keep in mind that although you can set `m` to `IO`, it’s not
+what netwire – and FRP – was designed for.
+
+## Events
+
+What about events? Well, netwire exposes events as a home-made
+`Maybe`:
+
+```haskell
+data Event a
+  = Event a
+  | NoEvent
+    deriving (Eq,Show)
+
+instance Functor Event where
+  fmap f e = case e of
+    Event a -> Event (f a)
+    NoEvent -> NoEvent
+```
+
+That’s actually enough, because we can attach `Event a` to time
+occurences with `Behavior t b a`. You’ll find every now and then
+functions using `Wire s e m (Event a) b`, for instance. You should
+get used to that as you write toy examples, and real-world ones,
+of course.
+
+# In the end
+
+What a trek… As you can see, I was able to approach netwire’s
+implementation comprehension pretty close. There are a few concepts
+I haven’t covered – like intrinsic switches, continuable switches,
+deferred switches… – but I don’t pretend having a comprehensive
+FRP article. You’ll have to dig in a bit more ;)
+
+I’ll try to post more concrete examples if you need them.
