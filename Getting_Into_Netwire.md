@@ -6,18 +6,18 @@ and is a pretty decent way to make *event-driven* programs.
 
 The problem with FRP is that, beside [Wikipedia](http://en.wikipedia.org/wiki/Functional_reactive_programming),
 [Haskell.org](https://wiki.haskell.org/Functional_Reactive_Programming) and a
-few of other resources, like [Conal Elliott](http://conal.net/papers/push-pull-frp/)
+few other resources, like [Conal Elliott](http://conal.net/papers/push-pull-frp/)’s
 papers, we lack learning materials. Getting into FRP is really not trivial
 and because of the lack of help, you’ll need to be brave to get your feet
 wet.
 
-Because I suffered **a lot** learning it from scratch and because I think
+Because I found it **hard** learning it from scratch and because I think
 it’s a good thing to pass knowledge by, I decided to write a few about it so
-that people can learn via a simplest path.
+that people can learn via an easier path.
 
 I’ll be talking about [netwire](https://hackage.haskell.org/package/netwire),
-which is not the *de-facto* library to use in Haskell, because eh… we don’t
-have any yet. However, netwire exposes a lot of very interesting concepts and
+which is not the *de-facto* library to use in Haskell, because, eh… we don’t
+have any. However, netwire exposes a lot of very interesting concepts and
 helped me to understand more general abstractions. I hope it’ll help you as
 well. :)
 
@@ -36,9 +36,10 @@ that way to go seems nice, it’s actually error-prone and ill-formed design:
   - you eventually end up with [spaghetti code](http://en.wikipedia.org/wiki/Spaghetti_code)
   - debugging callbacks is a true nightmare as the codebase grows
   - because of the first point, the code doesn’t compose – or in very minimal
-    ways – and is barely impossible to test against
+    ways – and is almost impossible to test against
   - you introduce side-effects that might introduce nasty bugs difficult to
     figure out
+  - debugging is like hitting your head on a tree log
 
 ![](http://phaazon.net/pub/spaghetti_code.jpg)
 
@@ -51,7 +52,7 @@ FRP is a new way to look at event-driven programming. Instead of representing
 reaction through callbacks, we consume events over time. Instead of building a
 callback that will be passed as reaction to the `setPushButtonCallback`
 function, we consume and transform events over time. The main idea of FRP could
-be summed up with following concepts:
+be summed up with the following concepts:
 
   - *behaviors*: a behavior is a value that reacts to time
   - *events*: events are just values that have occurrences in time
@@ -64,18 +65,19 @@ range of actions and mannerisms made by individuals, organisms, systems, or arti
 entities in conjunction with themselves or their environment, which includes the other
 systems or organisms around as well as the (inanimate) physical environment*. If we try
 to apply that to a simple version of FRP that only takes into account the time as
-external stimulus, it’s any kind of value that consumes time[^1]. What’s that? Well…
+external stimulus, a behavior isany kind of value that consumes time. What’s that?
+Well…
 
     newtype Behavior a = Behavior { stepBehavior :: Double -> a }
 
 A behavior is a simple function from time (`Double`) to a given value. Let’s take an
-example. Imagine you want to represent make a cube rotating around the *X axis*. You
+example. Imagine you want to represent a cube rotating around the *X axis*. You
 can represent the actual rotation with a `Behavior Rotation`, because the angle of
 rotation is linked to the time:
 
 ![](http://phaazon.net/pub/human_behavior.jpg)
 
-    rotationAngle :: Behavior Double Rotation
+    rotationAngle :: Behavior Rotation
     rotationAngle = Behavior $ \t -> rotate xAxis t
 
 Pretty simple, see?! However, it’d would more convenient if we could chose the type
@@ -147,7 +149,7 @@ Nicer isn’t it?! :)
 
 ### Stepping
 
-Stepping is the act of passing the input – i.e. time `t` in our case – down
+Stepping is the act of passing the input – i.e. the time `t` in our case – down
 to the `Behavior t a` and extract the resulting `a` value. Behaviors are
 commonly connected to each other and form a *reactive network*.
 
@@ -258,8 +260,9 @@ to quit the application.
 
 I’ve been using that idea for a while. It’s simple, nice and neat, because
 we don’t spread `IO` actions in our program logic, which remains then pure.
-That’s a very good way of doing it, and most cases, it’ll even be sufficient.
-However, that idea suffers from a serious issue: *it doesn’t scale*.
+That’s a very good way of doing it, and in most cases, it’ll even be
+sufficient. However, that idea suffers from a serious issue: *it doesn’t
+scale*.
 
 Who has only one camera? No one. You have a camera – maybe more than just
 one, lights, objects, terrains, AI, sounds, assets, maps and so on and so
@@ -271,7 +274,7 @@ Furthermore, imagine you want to add a new behavior to the camera, like
 being able to handle the mouse cursor move – `Input` being augmented, of
 course. You’d need to change / add lines in our `updateAppSt` function.
 Imagine how messy `updateAppSt` would be… That would, basically, gather
-all reactions in a single function. Not neat.
+all reactions into a single function. Not neat.
 
 ## Adding FRP
 
@@ -281,7 +284,7 @@ way you want. The semantics of your values should be true for the
 reactive values.
 
 Typically, with FRP, you don’t have event handlers anymore. The codebase
-can then grow sanely without having to accumulate big state every now
+can then grow sanely without having to accumulate big states every now
 and then. FRP applications scale and compose pretty well.
 
 Let’s start with a simple FRP implementation for our example.
@@ -312,7 +315,8 @@ switching with that? Remember the type of `until`:
 `camera` is not a behavior, it’s a function from events to a
 behavior. You have to apply the events on `camera` in order to get its
 behavior. Once you’ve done that, you cannot pass events to the next
-behavior. What a pity. That is more a configured behavior, yeah.
+behavior. What a pity. That is more a configured behavior than a
+behavior consuming inputs / events.
 
 With the current `Behavior t a` implementation, a behavior network is
 reduced to a function `t -> a`, basically. Then, the only stimulus you
@@ -321,6 +325,8 @@ got from outside is… *time*. We lack something.
 ### Arrowized behaviors
 
 > *“A way to forward events?”*
+
+![](https://www.haskell.org/arrows/first.png)
 
 Yes! But more mainly, a way to extend our `Behavior t a` with inputs!
 Don’t get me wrong, we are not talking about a reactive *value* here.
@@ -393,7 +399,7 @@ inputToBehavior i = case i of
   D -> -- and so forth
   F -> -- ;)
   R -> -- ...
-  Quit -> Behavior $ \_ (_,cam) -> cam
+  _ -> Behavior $ \_ (_,cam) -> cam
 ```
 
 Pretty simple, see? When we push `W`, we go forward forever. We could
@@ -434,9 +440,9 @@ Before going on, I’d like to introduce those scary abstractions you are
 afraid of. Because they’re actually not. They’re **all simple**. At least
 for Haskell purposes.
 
-**Note: I do know we could simply use the GeneralizedNewtypeDeriving`
+**Note**: I do know we could simply use the GeneralizedNewtypeDeriving`
 extension but I want to detail all the implementation, so we’ll see
-how to implement all the nice abstractions.**
+how to implement all the nice abstractions.
 
 ### Arrow
 
@@ -459,7 +465,7 @@ value of the pair. Let’s implement that:
 ```haskell
 instance Arrow (Behavior t) where
   arr f = fix $ \r -> Behavior $ \t a -> (f a,r)
-  first f = fix $ \r -> Behavior $ \t (b,d) ->
+  first f = Behavior $ \t (b,d) ->
     let (c,fn) = stepBehavior f t b
     in ((c,d),first fn)
 ```
@@ -481,12 +487,18 @@ instance Category (Behavior t) where
     in (xr,xn . yn)
 ```
 
+**Note**: because of `Prelude` exporting specialized implementation
+of `id` and `(.)` – the function ones – you should hide them in order
+to implement `Category`:
+
+    import Prelude hiding ( (.), id )
+
 ### Semigroup
 
 A [semigroup](http://en.wikipedia.org/wiki/Semigroup) is a pretty cool
 algebraic structure used in Haskell to represent “anything that
 associates”. It exposes an associative binary function over a set.
-In the case of behaviors, if two behaviors outputs semigroups values, we
+In the case of behaviors, if two behaviors outputs semigroup values, we
 can associates the behaviors to build a single one.
 
 A `Semigroup` is implemented via a single typeclass method, `(<>)`.
@@ -533,11 +545,11 @@ instance Applicative (Behavior t a) where
 
 This one is special. You don’t have to know what a profunctor is, but
 eh, you should, because profunctors are pretty simple to use in Haskell,
-and are very useful. I won’t explain what they are – you should a look
+and are very useful. I won’t explain what they are – you should have a look
 at [this article](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/profunctors)
 for further details.
 
-If you do, here’s the implementation for `dimap`:
+If you do know them, here’s the implementation for `dimap`:
 
 ```haskell
 instance Profunctor (Behavior t) where
@@ -552,7 +564,7 @@ instance Profunctor (Behavior t) where
 
 Behaviors consume environment state and have outputs. However, they
 sometimes just don’t. They don’t output anything. That could be the
-case for a behavior that only emit during a certain period of time.
+case for a behavior that only emits during a certain period of time.
 It could also be the case for a signal function that’s defined on a
 given interval: what should we output for values that lie outside?
 
@@ -565,17 +577,17 @@ using `Maybe` as a wrapper over the output. Like the following:
 If `(Maybe b)` is `Nothing`, the output is undefined, then the
 behavior inhibits.
 
-However, using a bare and exposed `Maybe` exposes the user directly
+However, using a bare `Maybe` exposes the user directly
 to inhibition. There’s another way to do that:
 
     newtype Behavior t a b = Behavior { stepBehavior :: t -> a -> Maybe (b,Behavior t a b) }
 
 Here we are. We have behaviors that can inhibit. If a behavior doesn’t
-inhibit, it just returns `Just (output,nextBehavior)`, otherwise
-it outputs `Nothing` and inhibits forever.
+inhibit, it returns `Just (output,nextBehavior)`, otherwise it
+outputs `Nothing` and inhibits forever.
 
-> **Exercise: try to reimplement all the above abstractions with
-> the new type of `Behavior`.**
+> **Exercise**: try to reimplement all the above abstractions with
+> the new type of `Behavior`.
 
 We can add a bunch of other interesting functions:
 
@@ -599,7 +611,7 @@ key presses or mouse motion.
 
 However, inhibiting can be useful. For instance, we can implement
 a new kind of behavior switching using inhibition. Let’s try to
-implement a function that takes two behaviors and switch to the
+implement a function that takes two behaviors and switches to the
 latter when the former starts inhibiting:
 
 ```haskell
@@ -616,13 +628,15 @@ revive x y = Behavior $ \t a -> case stepBehavior x t a of
 that is `a` until it inhibits, afterwhile it’s `b`. Simple, and
 useful.
 
-In *netwire*, `revive` – or `(~>) – is the operator `(-->)`. There’s
-also an operator that does the opposite thing: `(>--)`. `a >-- b`
-is `a` until `b` starts producing – i.e. until `b` doesn’t
-inhibit anymore.
+In *netwire*, `revive` – or `(~>)` – is `(-->)`. There’s
+also an operator that does the opposite thing: `(>--)`.
+`a >-- b` is `a` until `b` starts producing – i.e. until `b`
+doesn’t inhibit anymore.
 
-> **Exercise: write the implementatof of `(>~)`, our version
-> for netwire’s `(>--)`.**
+> **Exercise**: write the implementatof of `(>~)`, our version
+> for netwire’s `(>--)`.
+
+![](http://phaazon.net/pub/wire.jpg)
 
 ## Behaviors revisited
 
@@ -684,10 +698,11 @@ of course.
 
 # In the end
 
-What a trek… As you can see, I was able to approach netwire’s
-implementation comprehension pretty close. There are a few concepts
+What a trek… As you can see, we were able to approach netwire’s
+implementation understanding pretty closely. There are a few concepts
 I haven’t covered – like intrinsic switches, continuable switches,
 deferred switches… – but I don’t pretend having a comprehensive
 FRP article. You’ll have to dig in a bit more ;)
 
-I’ll try to post more concrete examples if you need them.
+I’ll write another article about FRP and netwire to implement the
+camera example with netwire so that you can have a concrete example.
