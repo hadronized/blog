@@ -444,7 +444,7 @@ how to implement all the nice abstractions.**
 along the axis of computation. A computation has inputs and outputs. So
 does a behavior.
 
-Although arrows are not really used in Haskell because they’re scary, they’re
+Although arrows are not really used in Haskell, they’re
 ultra simple (themselves and the common combinators built over the
 abstraction) and useful in some cases.
 
