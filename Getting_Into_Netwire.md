@@ -438,23 +438,6 @@ for Haskell purposes.
 extension but I want to detail all the implementation, so we’ll see
 how to implement all the nice abstractions.**
 
-### Category
-
-A [category](http://en.wikipedia.org/wiki/Category_%28mathematics%29)
-basically exposes two concepts: composition and identity. In our case,
-the identity represents a constant behavior in time and the composition
-composes two behaviors in time. Let’s implement `Category` by providing
-implementation for both `id` and `(.)`:
-
-```haskell
-instance Category (Behavior t) where
-  id = Behavior $ \t a -> (a,id)
-  x . y = Behavior $ \t a ->
-    let (yr,yn) = stepBehavior y t a
-        (xr,xn) = stepBehavior x t yr
-    in (xr,xn . yn)
-```
-
 ### Arrow
 
 [Arrows](https://www.haskell.org/arrows) are a generalization of functions
@@ -481,6 +464,44 @@ instance Arrow (Behavior t) where
     in ((c,d),first fn)
 ```
 
+### Category
+
+A [category](http://en.wikipedia.org/wiki/Category_%28mathematics%29)
+basically exposes two concepts: composition and identity. In our case,
+the identity represents a constant behavior in time and the composition
+composes two behaviors in time. Let’s implement `Category` by providing
+implementation for both `id` and `(.)`:
+
+```haskell
+instance Category (Behavior t) where
+  id = arr id
+  x . y = Behavior $ \t a ->
+    let (yr,yn) = stepBehavior y t a
+        (xr,xn) = stepBehavior x t yr
+    in (xr,xn . yn)
+```
+
+### Semigroup
+
+A [semigroup](http://en.wikipedia.org/wiki/Semigroup) is a pretty cool
+algebraic structure used in Haskell to represent “anything that
+associates”. It exposes an associative binary function over a set.
+In the case of behaviors, if two behaviors outputs semigroups values, we
+can associates the behaviors to build a single one.
+
+A `Semigroup` is implemented via a single typeclass method, `(<>)`.
+Let’s do that for behaviors:
+
+```haskell
+instance (Semigroup b) => Semigroup (Behavior t a b) where
+  x <> y = Behavior $ \t a ->
+    let (xr,xn) = stepBehavior x t a
+        (yr,yn) = stepBehavior y t a
+    in (xr <> yr,xn <> yn)
+```
+
+Simple and neat.
+
 ### Functor
 
 You might already know that one since I talked about it a few lines ago,
@@ -494,3 +515,111 @@ instance Functor (Behavior t a) where
 ```
 
 Pretty cool eh?
+
+### Applicative
+
+A very known one too. Let’s see how we could implement `Applicative`:
+
+```haskell
+instance Applicative (Behavior t a) where
+  pure = arr . const
+  f <*> x = Behavior $ \t a ->
+    let (fr,fn) = stepBehavior f t a
+        (xr,xn) = stepBehavior x t a
+    in (fr xr,fn <*> xn)
+```
+
+### Profunctor
+
+This one is special. You don’t have to know what a profunctor is, but
+eh, you should, because profunctors are pretty simple to use in Haskell,
+and are very useful. I won’t explain what they are – you should a look
+at [this article](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/profunctors)
+for further details.
+
+If you do, here’s the implementation for `dimap`:
+
+```haskell
+instance Profunctor (Behavior t) where
+  dimap l r x = Behavior $ \t a ->
+    let (xr,xn) = stepBehavior x a (l t)
+    in (r xr,dimap l r xn)
+```
+
+## Inhibition
+
+### Bare concept
+
+Behaviors consume environment state and have outputs. However, they
+sometimes just don’t. They don’t output anything. That could be the
+case for a behavior that only emit during a certain period of time.
+It could also be the case for a signal function that’s defined on a
+given interval: what should we output for values that lie outside?
+
+Such a scenario is called *inhibition*. There’re several solutions
+to implement inhibition. The simplest and most famous one is by
+using `Maybe` as a wrapper over the output. Like the following:
+
+    Behavior t a (Maybe b)
+
+If `(Maybe b)` is `Nothing`, the output is undefined, then the
+behavior inhibits.
+
+However, using a bare and exposed `Maybe` exposes the user directly
+to inhibition. There’s another way to do that:
+
+    newtype Behavior t a b = Behavior { stepBehavior :: t -> a -> Maybe (b,Behavior t a b) }
+
+Here we are. We have behaviors that can inhibit. If a behavior doesn’t
+inhibit, it just returns `Just (output,nextBehavior)`, otherwise
+it outputs `Nothing` and inhibits forever.
+
+> **Exercise: try to reimplement all the above abstractions with
+> the new type of `Behavior`.**
+
+We can add a bunch of other interesting functions:
+
+### Inhibition-related combinators
+
+```haskell
+dead :: Behavior t a b
+dead = Behavior $ \_ _ -> Nothing
+
+one :: b -> Behavior t a b
+one x = Behavior $ \_ _ -> Just (x,dead)
+```
+
+`dead` is a behavior that inhibits forever. That is, it doesn’t
+produce any value at any time.
+
+`one x` produces `x` once, and then inhibits forever. That’s a nice
+combinator to use when you want to *pulse* values in time. We’ll
+see later that it’s very useful to represent discrete events, like
+key presses or mouse motion.
+
+However, inhibiting can be useful. For instance, we can implement
+a new kind of behavior switching using inhibition. Let’s try to
+implement a function that takes two behaviors and switch to the
+latter when the former starts inhibiting:
+
+```haskell
+revive :: Behavior t a b -> Behavior t a b -> Behavior t a b
+revive x y = Behavior $ \t a -> case stepBehavior x t a of
+  Just (xr,xn) -> return (xr,revive xn y)
+  Nothing -> stepBehavior y t a
+
+(~>) :: Behavior t a b -> Behavior t a b -> Behavior t a b
+(~>) = revive
+```
+
+`(~>)` is a handy alias to `revive`. Then, `a ~> b` is a behavior
+that is `a` until it inhibits, afterwhile it’s `b`. Simple, and
+useful.
+
+In *netwire*, `revive` – or `(~>) – is the operator `(-->)`. There’s
+also an operator that does the opposite thing: `(>--)`. `a >-- b`
+is `a` until `b` starts producing – i.e. until `b` doesn’t
+inhibit anymore.
+
+> **Exercise: write the implementatof of `(>~)`, our version
+> for netwire’s `(>--)`.**
