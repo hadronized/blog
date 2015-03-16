@@ -554,7 +554,7 @@ If you do know them, here’s the implementation for `dimap`:
 ```haskell
 instance Profunctor (Behavior t) where
   dimap l r x = Behavior $ \t a ->
-    let (xr,xn) = stepBehavior x a (l t)
+    let (xr,xn) = stepBehavior x t (l a)
     in (r xr,dimap l r xn)
 ```
 
