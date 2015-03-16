@@ -498,7 +498,7 @@ to implement `Category`:
 A [semigroup](http://en.wikipedia.org/wiki/Semigroup) is a pretty cool
 algebraic structure used in Haskell to represent “anything that
 associates”. It exposes an associative binary function over a set.
-In the case of behaviors, if two behaviors outputs semigroup values, we
+In the case of behaviors, if two behaviors output semigroup values, we
 can associates the behaviors to build a single one.
 
 A `Semigroup` is implemented via a single typeclass method, `(<>)`.
