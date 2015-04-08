@@ -1,6 +1,6 @@
 # Volumetric light shafts
 
-On the last weekend, I was at the Revision demoparty (Eastparty). It’s a
+On the last weekend, I was at the Revision demoparty (Easterparty). It’s a
 meeting of friends and great people doing graphics, music, code and that kind
 of fun and pretty stuff. I didn’t release anything, but I’ve been working on
 a release for a while now, and I was lacking something in my engine: *light 
