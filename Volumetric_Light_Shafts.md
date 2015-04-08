@@ -25,7 +25,7 @@ describing that yet. If you have, please leave a link in the comments below! :)
 # Volume extraction
 
 The idea is the following. You need a depthmap. If you’re used to *shadow mapping*
-you already have a depthmap for your light. In order to simply this, we’ll use the
+you already have a depthmap for your light. In order to simplify this, we’ll use the
 depthmap used for shadow mapping, but I guess it’s totally okay to use another
 depthmap – we’ll see that it could be even handier.
 
