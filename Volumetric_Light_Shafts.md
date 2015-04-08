@@ -30,7 +30,7 @@ depthmap used for shadow mapping, but I guess it’s totally okay to use another
 depthmap – we’ll see that it could be even handier.
 
 For each point in that depthmap is the distance – in a specific space coordinates
-system – you have the distance of the corresponding point in world space to the 
+system – of the corresponding point in world space to the 
 position of the light. If you have the projection and the view matrices of the
 light, it’s easy to deproject the depthmap. What would we get if we deproject
 **all the depthmap texels** into the world space? We’d get the exact lit surfaces.
