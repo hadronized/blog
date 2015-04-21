@@ -12,7 +12,7 @@ issues people should be aware of.
 
 ## You’re on wire
 
-Every people – in France and abroad as well of course – is on wire. The French
+Every people – in France and abroad as well of course – could be on wire. The French
 government might have access to whatever you do with your internet connection.
 Crypto-analysts working for the goverment will read dozens of thousands of
 messages from individuals. They’ll know where you go to and where you go from –
