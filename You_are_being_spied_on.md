@@ -23,7 +23,7 @@ your e-mails if they want to.
 Of course, most of people “just don’t care”. *“Why should I care that the
 government knows the litter brand I bought to my cat? I don’t give a damned
 heck as long as they catch bad people*”. That’s a point, but that’s also being
-blind. Numeric communication is not only about yourself. It’s about people.
+blind. Digital communication is not only about yourself. It’s about people.
 It’s about you and your friends. You, and your contacts. You can’t choose for
 them whether they’d like people to watch other their shoulders every now and
 then. If the government has access to your private data, it has access to your
@@ -34,11 +34,11 @@ friends’ and contacts’ data as well. Not giving a damned heck is being selfi
 Then comes the issue with what the law is. It gives the government the right
 to spy on masses. They could even sell the data they collect. As a counter
 argument, the “Commission de contrôle des techniques de renseignement” – which
-French stands for “Committee for inquiry of technics control” – was created. That
-committe is there to watch the government and ensure it doesn’t go out of
-control and doesn’t violate people’s rights. The issue with that is that our
-prime minister has the right to ignore the committee’s decision. If the
-committee says *“Wait a minute. You don’t have the right to gather those
+French stands for “Control commission of intelligence techniques” – was
+created. That committe is there to watch the government and ensure it doesn’t
+go out of control and doesn’t violate people’s rights. The issue with that is
+that our prime minister has the right to ignore the committee’s decision. If
+the committee says *“Wait a minute. You don’t have the right to gather those
 information without asking for M. Dupont’s approval”*, the prime minister may
 answer back *“Well, fuck off. I will and you can’t stop me”*. And the sad truth
 is that… yeah, with that law, the prime minister and their team has the right
