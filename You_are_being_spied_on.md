@@ -20,7 +20,7 @@ think of your smartphone’s GPS capabilities. They’ll know which pictures you
 take, how much time you spend in your bathroom. They’ll even be able to read
 your e-mails if they want to.
 
-Of course, most of people “just don’t care”. *“Why should I care that the
+Of course, most people “just don’t care”. *“Why should I care that the
 government knows the litter brand I bought to my cat? I don’t give a damned
 heck as long as they catch bad people*”. That’s a point, but that’s also being
 blind. Digital communication is not only about yourself. It’s about people.
