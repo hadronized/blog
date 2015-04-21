@@ -25,7 +25,7 @@ government knows the litter brand I bought to my cat? I don’t give a damned
 heck as long as they catch bad people*”. That’s a point, but that’s also being
 blind. Digital communication is not only about yourself. It’s about people.
 It’s about you and your friends. You, and your contacts. You can’t choose for
-them whether they’d like people to watch other their shoulders every now and
+them whether they’d like people to watch over their shoulders every now and
 then. If the government has access to your private data, it has access to your
 friends’ and contacts’ data as well. Not giving a damned heck is being selfish.
 
