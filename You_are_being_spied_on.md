@@ -34,7 +34,7 @@ friends’ and contacts’ data as well. Not giving a damned heck is being selfi
 Then comes the issue with what the law is. It gives the government the right
 to spy on masses. They could even sell the data they collect. As a counter
 argument, the “Commission de contrôle des techniques de renseignement” – which
-French stands for “Committee for inquiry technics control” – was created. That
+French stands for “Committee for inquiry of technics control” – was created. That
 committe is there to watch the government and ensure it doesn’t go out of
 control and doesn’t violate people’s rights. The issue with that is that our
 prime minister has the right to ignore the committee’s decision. If the
@@ -60,6 +60,6 @@ legal. That makes the French government way worse than the NSA to me.
 
 I think the first thing I’ll do will be to revoke my French VPS subscription
 to move it out of France, in a country in which people still have privacy. Keep
-your communication crypted as much as possible (ssh and so on). And as a bad
+your communication encrypted as much as possible (ssh and so on). And as a bad
 joke, don’t leave your camera in your bedroom. You might be spied on by Manuel
 Valls while having sex with your girlfriend.
