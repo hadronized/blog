@@ -1,11 +1,11 @@
 # Big brother of NSA
 
-On the 19th of March, a law was introduced in France. That law was entitled
-*“loi du renseignement”* and was presented in regard of what happened in the
-*Charlie Hebdo* awful week. The main idea of the law is to put peole on wire so
-that terrorist activities could be spotted and dismantled.
+On the 19th of March 2015, a law was introduced in France. That law was
+entitled *“loi du renseignement”* and was presented in regard of what happened
+in the *Charlie Hebdo* awful week. The main idea of the law is to put peole on
+wire so that terrorist activities could be spotted and dismantled.
 
-That law’s been applied for a few days now.
+That law will be voted and apply on the the 5th of May 2015.
 
 Although such a law sounds great for counter-terrorism, it has several major
 issues people should be aware of.
@@ -29,7 +29,7 @@ them whether they’d like people to watch other their shoulders every now and
 then. If the government has access to your private data, it has access to your
 friends’ and contacts’ data as well. Not giving a damned heck is being selfish.
 
-## You’re being violated
+## You’ll be violated
 
 Then comes the issue with what the law is. It gives the government the right
 to spy on masses. They could even sell the data they collect. As a counter
@@ -49,9 +49,9 @@ would happen if a terrorist hacked into your computer. Would you go to jail
 because the prime minister would have stated you were a terrorist? Damn me if I
 know.
 
-# We’ve lost a right
+# We’re going to lose a right
 
-French people have lost a very important right: the right to privacy. It was
+French people will lose a very important right: the right to privacy. It’ll be
 sacrificied without your opinion for counter-terrorism, giving the government
 a power it shouldn’t have. You thought the NSA was/is wrong? Sure it is. But
 when the NSA watches over American and worldwide people, it is illegal whereas
