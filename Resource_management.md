@@ -54,7 +54,7 @@ of resource is assigned a manager by using a template parameter, and then if
 a manager needs to load a dependency, it just has to reference the corresponding
 manager by stating the type in the template parameter :
 
-    T & getResource<Model>(std::string const &name) {
+    Model & getResource<Model>(std::string const &name) {
       Texture &dependency = getResource<Texture>(...);
       ...
     }
