@@ -182,8 +182,8 @@ functions – one for lookup in the map, one for inserting into the map.
 
 # Conclusion
 
-I truely believe that my solution is a good compromise between elegance and ease.
-It has a lot of advanges:
+I truly believe that my solution is a good compromise between elegance and ease.
+It has a lot of advantages:
 
   - simple to use ;
   - simple to implement; you just have to play around with closures ;
