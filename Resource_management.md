@@ -128,15 +128,15 @@ matter. For simplicity, let’s state we’re using a *monad transformer*; that 
 we use `StateT s m` as monad.
 
 We still need `s`. The problem is that `s` has to be provided by the user. Worse,
-it has to implement **all instances** we need so that the loading functions may
+they have to implement **all instances** we need so that the loading functions may
 work. Less boilerplate than the explicit store solution, but still a lot of
 boilerplate. Imagine you provide a type for `s`, like `Cache`. Expending the
-cache to support new types – like user-defined ones – will be more boilerplate
-to write.
+cache to support new types – like user-defined ones – will be more extra
+boilerplate to write.
 
 ### Closures
 
-The solution I use in my engine might not the perfect solution. It’s not
+The solution I use in my engine might not be the perfect solution. It’s not
 [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)),
 an important concept in Haskell. However, Haskell is not designed to be used in
 convenient situations only. We’re hitting a problematic situation. We need to make
@@ -144,11 +144,11 @@ a compromise between elegance and simplicity.
 
 The solution required the use of *closures*. If you don’t know what a closure is,
 you should check out the [wikipedia page](https://en.wikipedia.org/wiki/Closure_(computer_programming))
-for a first start.
+for a first shot.
 
-The idea is that, our loading functions will perform some `IO` operations to
+The idea is that our loading functions will perform some `IO` operations to
 load objects. Why not putting the cache *directly* in that function? We’d have a
-function with an opaque and invisible state. Consider the following:
+function with an opaque and invisible associated state. Consider the following:
 
     type ResourceMap a = Map String a
 
@@ -158,9 +158,10 @@ function with an opaque and invisible state. Consider the following:
       ref <- newIORef empty
       pure $ \name -> do
         -- we can use the ref ResourceMap to insert / lookup value in the map
+        -- thanks to the closure!
 
 That solution is great because now, a manager is just a function. How would you
-implement `genModelManager`? Well:
+implement `getModelManager`? Well:
 
     getModelManager :: (MonadIO m,...)
                     => (String -> m Texture)
@@ -175,8 +176,8 @@ We can then get the loader functions with the following:
 And you just have to pass those functions around. The cool thing is that you can
 wrap them in a type in your library and provide a function that initializes them
 all at once – I do that in my engine. Later on, the user can extend the available
-managers by type by providing new functions. In my engine, I provide a few
-functions like `mkResourceManager` that hide the `ResourceMap` by providing two
+managers by providing new functions for new types. In my engine, I provide a few
+functions like `mkResourceManager` that hides the `ResourceMap`, providing two
 functions – one for lookup in the map, one for inserting into the map.
 
 # Conclusion
@@ -184,22 +185,23 @@ functions – one for lookup in the map, one for inserting into the map.
 I truely believe that my solution is a good compromise between elegance and ease.
 It has a lot of advanges:
 
-  - simple to use
-  - simple to implement; you just have to play around with closures
-  - dependencies resolving easy to add and hidden once the functions are generated
+  - simple to use ;
+  - simple to implement; you just have to play around with closures ;
+  - dependencies resolving is easy to add and hidden once the functions are 
+    generated ;
   - little runtime overhead (due to closures, might be optimized away by the
-    compiler though)
-  - can be easily extended by the user to add new types
+    compiler though) ;
+  - can be easily extended by the user to support custom/new types ;
   - if correctly used, implementations can replace `IORef` with `TVar` or
-    similar objects for thread-safe implementations
+    similar objects for thread-safe implementations ;
   - several replicated functions mean several stores (can be useful in certain
-    cases)
+    cases).
 
 The huge drawback I see in that solution is its opacity. There’s also no way to
 query the state of each cache. Such a feature could be added by proving a new
 function, for instance. Same thing for deletion.
 
 I’m one of those Haskellers who love purity. I try to keep my code the purest I
-can, but there are exceptions.
+can, but there are exceptions, and that cache problem fits that kind of exception.
 
 Feel free to comment, and as always, keep the vibe and happy hacking!
