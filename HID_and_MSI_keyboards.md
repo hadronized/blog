@@ -32,7 +32,7 @@ such devices, but nothing was working. There’s a
 work and has bugs.
 
 I didn’t give up though. I wrote my own **Haskell HID API** binding, called
-[hid](https://hackage.haskell.org/package/hid). Several good thinks about it:
+[hid](https://hackage.haskell.org/package/hid). Several good things about it:
 
   - it does work ;
   - it’s simple ;
@@ -52,7 +52,7 @@ the AUR! Search for msi-kb-backlit with yaourt, or download
 [the tarball](https://aur4.archlinux.org/packages/msi-kb-backlit).**
 
 The software has an embedded documentation to help you tweak with colors and
-nodes. ;)
+modes. ;)
 
 Feel free to use all those pieces of software. I made them with love for you
 all!
