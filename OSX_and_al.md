@@ -1,9 +1,8 @@
 # Support for Mac users!
 
-This will be a short announcement. [al](https://github.com/phaazon/al), a
-**Haskell** wrapper to the **OpenAL** C library. I designed it to be a *1:1*
-wrapper to the C side – then you’ll have to deal with `Ptr` and all that kind of
-`Foreign` and other joys.
+This will be a short announcement about
+[al](https://hackage.haskell.org/package/al), a **Haskell** wrapper to the
+**OpenAL** C library.
 
 Currently, the wrapper has been successfully tested on Linux – at least it works
 well on my *Archlinux* distro. I made a little program that reads from an *.ogg*
@@ -32,7 +31,7 @@ Then, *Mac OS X* is now officially supported. The release version is the
 There’s something else I’d like to discuss. Quickly after the first release of
 [al](https://hackage.haskell.org/package/al-0.1.0.0), I decided to push it onto
 [stackage](https://www.stackage.org). Unfortunately, there’s a problem with the
-package and *Ubuntu*. For a very obscure reason, *Ubuntu* doesn’t expose
+package and *Ubuntu*. For a very dark reason, *Ubuntu* doesn’t expose
 anything when invoking `pkg-confg --cflags`, even if the files are there – on
 *Ubuntu* they can be found in `/usr/include/AL`.
 
@@ -42,7 +41,7 @@ something else on other Linux distro. The problem might be related to the
 incomplete. So if you experience that kind of issue, you can fix it by passing
 the path to your **OpenAL** headers:
 
-    cabal install --extra-include-dirs=/usr/include/AL
+    cabal install al --extra-include-dirs=/usr/include/AL
 
 If **OpenAL** is installed somewhere else, consider using:
 
