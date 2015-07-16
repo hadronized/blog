@@ -18,15 +18,15 @@ we have a law for *monoids*:
 
     a <> mempty = mempty <> a = a
 
-Those laws can – *have* – to be used in our code base to take advantage of the
-structures, optimizing or avoid boilerplate.
+Those laws can – *have* – to be used in our code base to take advantage over the
+structures, optimize or avoid boilerplate.
 
 ## The Default typeclass
 
 In some situations, we want a way to express default values. That’s especially
 true in OO languages, like in the following **C++** function signature:
 
-    foo(float i = 1);
+    void foo(float i = 1);
 
 In **Haskell**, we cannot do that, because we have to pass all arguments to a
 function. The following doesn’t exist:
@@ -55,9 +55,9 @@ instance Default Fullscreen where
   def = Fullscreen False
 ```
 
-However, there is an issue with that. The first one is that you cannot use
-`Default` without creating `newtype`s to overload them. Why? Well, consider the
-following `Default` instance:
+However, there is an issue with that. You cannot use `Default` without creating
+`newtype`s to overload them. Why? Well, consider the following `Default`
+instance:
 
 ```haskell
 instance Default Float where
@@ -99,7 +99,7 @@ should always have a goal. When we write as much boilerplate code as real code,
 we can start thinking there’s something wrong. Worse, if we have more
 boilerplate than real code, well, something is terribly wrong. In our case,
 we’re introducing a lot of `newtype`s for only being able to use `def` at a few
-spots. Is that even worth? Of course not.
+spots. Is that even worth it? Of course not.
 
 ## Default is evil
 
@@ -116,7 +116,7 @@ bar :: (Default a) => a -> Maybe String
 ```
 
 Can you say what the default is for? Of course you cannot. Because there’s no
-law. The instance has no real meaning. A default value has sense only for the
+law. The instance has no real meaning. A default value makes sense only for the
 computation using it. For instance, the empty list makes sense if we glue it to
 the *list concatenation*.
 
