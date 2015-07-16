@@ -146,4 +146,10 @@ So please. Stop using `Default`. It doesn’t bring any sense to your codebase. 
 actually removes some! If you want to provide functions with defaulted
 arguments, consider partially applied functions.
 
+![](http://phaazon.net/pub/default_stats.png)
+
+[data-default](https://hackage.haskell.org/package/data-default) is a very
+famous package – look at the downloads! You can now have some hindsight about it
+before downloading it and ruining your design. ;)
+
 Happy hacking. :)
