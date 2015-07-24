@@ -19,10 +19,10 @@ dig in the documentation on hackage for further details.
 
 The second – breaking – change is that the interface has changed, especially the
 implementation of *splines*. However, the interface is now simpler and doesn’t
-require a lot of change in your code you’ve been using older versions.
+require a lot of change in your code if you’ve been using older versions.
 
 Feel free to read the
 [CHANGELOG](https://hackage.haskell.org/package/smoothie-0.3/changelog) for
 technical hints.
 
-As always, tell what you think of the library, and keep the vibe!
+As always, tell me what you think of the library, and keep the vibe!
