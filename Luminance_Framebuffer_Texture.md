@@ -24,7 +24,52 @@ will be recorded. That enables the use of *color-only* or *depth-only* renders, 
 optimized by GPU. It also includes a `rw` type variable, which has the same role as for `Buffer`.
 That is, you can have *read-only*, *write-only* or *read-write* framebuffers.
 
+## Textures
+
 The format types are used to know which textures to create and how to attach them. You don’t have
 to do that. The textures are hidden from the interface so that you can’t mess with them. I still
 need to find a way to provide some kind of access to the information they hold, in order to use
-them in shaders for instance.
+them in shaders for instance. I’d love to provide some kind of *monoidal* properties between
+framebuffers – to mimick [gloss](https://hackage.haskell.org/package/gloss) `Monoid` instance
+for its [Picture](https://hackage.haskell.org/package/gloss-1.9.2.1/docs/Graphics-Gloss-Data-Picture.html#t:Picture)
+type, basically.
+
+## Pixel format
+
+The cool thing is the fact I unified pixel formats. *Textures* and *framebuffers* share the same
+pixel format type (`Format t c`). Currently, they’re all phantom types, but I might unify them and
+use `DataKinds` to promote them to the type-level. A format has two type variables, `t` and `c`.
+
+`t` is the underlying type. Currently, it can be either `Int32`, `Word32` or `Float`. I might add
+support for `Double` as well later on.
+
+`c` is the chanel type. They’re basically five channel types:
+
+- `CR r`, a red channel ;
+- `CRG r g`, red and green channels ;
+- `CRGB r g b`, red, green and blue channels ;
+- `CRGBA r g b a`, red, green, blue and alpha channels ;
+- `CDepth d`, a depth channel (special case of `CR`, for depths only).
+
+The type variables `r`, `g`, `b`, `a` and `d` represents *channel sizes*. They’re currently
+three kind of *channel sizes*:
+
+- `C8`, for 8-bit ;
+- `C16`, for 16-bit ;
+- `C32`, for 32-bit.
+
+Then, `Format Float (CR C32)` is a red channel, 32-bit float – OpenGL equivalent is `R32F`.
+`Format Word32 (CRGB C8 C8 C16)` is a RGB channel with RG two 8-bit unsigned integer channels
+and the blue one is a 16-bit unsigned integer channel.
+
+Of course, if a pixel format doesn’t exist on the **OpenGL** part, you won’t be able to use it.
+Typeclasses are there to enforce the fact pixel format can be represented on the **OpenGL** side.
+
+# Next work
+
+Currently, I’m working hard on how to represent vertex formats. That’s not a trivial task, because
+we can send vertices to OpenGL as interleaved – or not – arrays. I’m trying to design something
+elegant and safe, and I’ll keep you informed when I finally get something. I’ll need to find
+an interface for the actual render command, and I should be able to release something!
+
+Keep the vibe, and have fun hacking around!
