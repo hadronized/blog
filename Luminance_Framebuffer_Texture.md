@@ -82,7 +82,7 @@ promote them to the type-level. A format has two type variables, `t` and `c`.
 - `CRGBA r g b a`, red, green, blue and alpha channels ;
 - `CDepth d`, a depth channel (special case of `CR`; for depths only).
 
-The type variables `r`, `g`, `b`, `a` and `d` represents *channel sizes*.
+The type variables `r`, `g`, `b`, `a` and `d` represent *channel sizes*.
 There’re currently three kind of *channel sizes*:
 
 - `C8`, for 8-bit ;
