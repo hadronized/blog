@@ -74,7 +74,7 @@ promote them to the type-level. A format has two type variables, `t` and `c`.
 `t` is the underlying type. Currently, it can be either `Int32`, `Word32` or
 `Float`. I might add support for `Double` as well later on.
 
-`c` is the channel type. They’re basically five channel types:
+`c` is the channel type. There’re basically five channel types:
 
 - `CR r`, a red channel ;
 - `CRG r g`, red and green channels ;
