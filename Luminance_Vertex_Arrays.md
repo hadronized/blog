@@ -51,7 +51,7 @@ data Vertex = Vertex {
 
 Now, the teapot would have several vertices. Approximately, let’s state the
 teapot has five vertices – yeah, ugly teapot. We can represent such vertices
-in an interleaved arrays by simply recording them in a list or an array:
+in an interleaved array by simply recording them in a list or an array:
 
 ![Interleaved](http://phaazon.net/pub/interleaved.png)
 
@@ -67,10 +67,10 @@ As you can see, with deinterleaved arrays, all attributes are extracted and
 grouped. If you want to access the third vertex, you need to read the third `X`,
 the third `Y` and the third `Z`.
 
-Both the methods have advantages and drawbacks. The cool things about
+Both the methods have advantages and drawbacks. The cool thing about
 deinterleaved arrays is that we can copy huge regions of typed memory at once
 whilst we cannot with interleaved arrays. However, interleaved arrays store
-continuous structures, so reading a structure back might be faster.
+continuous structures, so writing and reading a structure back might be faster.
 
 An important point to keep in mind: because we plan to pass those arrays to
 **OpenGL**, there’s no
@@ -92,9 +92,15 @@ tuple! – a very special kind of list, indeed.
 data a :. b = a :. b
 
 infixr 6 :.
+
+-- a :. b is isomorphic to (a,b)
+-- a :. b :. c is isomorphic to (a,b,c)
+
+newtype Fix f = Fix (f (Fix f)) -- from Control.Monad.Fix
+type Inf a = Fix ((:.) a) -- infinite tuple!
 ```
 
-Pretty simple, but way much powerful than the regular, monomorphic tuples. As
+Pretty simple, but way more powerful than the regular, monomorphic tuples. As
 you can see, `(:.)` is a right-associative. That means that
 `a :. b :. c = a :. (b :. c)`.
 
