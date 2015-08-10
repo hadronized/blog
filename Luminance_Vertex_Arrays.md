@@ -6,7 +6,7 @@ been struggling to recover and focus. But here I am!
 # So, what’s new?
 
 **OpenGL** allows programmers to send *vertices* to the GPU through what
-is called [vertex arrays](https://www.opengl.org/wiki/Vertex_Specification).
+is called a [vertex array](https://www.opengl.org/wiki/Vertex_Specification).
 Vertex specification is performed through several functions, operating on
 several objects. You need, for instance, a *vertex buffer object*, an *index
 buffer object* and a *vertex array object*. The *vertex buffer* stores the
