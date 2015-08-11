@@ -43,7 +43,7 @@ then!
 The first implication is the fact you won’t be able to use `Word16`, for
 instance. You’ll need to stick to the three types that have a `GPU` instance.
 
-**Note: that doesn’t prevent us from adding `Double` later on, because a
+**Note**: that doesn’t prevent us from adding `Double` later on, because a
 `Double` is a 64-bit type, which is a multiple of **4** bytes!
 
 That’s all I have for today. I’m working on something very exciting linked to
