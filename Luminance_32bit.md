@@ -3,7 +3,7 @@ luminance](http://phaazon.blogspot.fr/2015/08/luminance-vertex-arrays.html). In
 that article, I told you that the memory was packed with alignment set to 1.
 
 Well, I’ve changed my mind. Some people pointed out that the good thing to do
-for *most GPU* is to align on 32 bit. That is, 4 bytes. The alignment should be
+for *most GPU* is to align on 32-bit. That is, 4 bytes. The alignment should be
 4 bytes, then, not 1.
 
 There might be an issue with that. If you store a structure with attributes
