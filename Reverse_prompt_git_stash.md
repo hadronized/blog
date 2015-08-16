@@ -26,7 +26,7 @@ changes so that I never forget them! Here’s a screenshot to explain that:
 
 ![](http://phaazon.net/pub/git_stash_shell.png)
 
-As you can see, my prompt now shows me how many stashed changes are they around!
+As you can see, my prompt now shows me how many stashed changes there are around!
 
 # The code
 
