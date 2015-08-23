@@ -203,6 +203,11 @@ of the type, you can `divide` your type and map all fields to the uniforms by ap
 The current implementation is almost the one shown here. There’s also a `Decidable` instance, but
 I won’t talk about that for now.
 
+The cool thing about that is that I can lose the `Uniformed` monadic type and rely only on `U`.
+Thanks to the `Divisible` typeclass, we have completion, and we can’t override future uniforms then!
+
+----------------
+
 I hope you’ve learnt something cool and useful through this. Keep in mind that category abstractions 
 **are powerful** and are useful in some contexts.
 
