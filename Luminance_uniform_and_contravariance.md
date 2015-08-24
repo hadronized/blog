@@ -83,7 +83,7 @@ Pretty simple.
 
 # The new uniform interface
 
-The problem with that is that we still the the completion problem and the side-effects, because we
+The problem with that is that we still have the completion problem and the side-effects, because we
 just wrap them without adding anything special – `Uniformed` is isomorphic to `IO`. We have no way
 to create a type and ensure that *all* uniforms have been sent down to the GPU…
 
