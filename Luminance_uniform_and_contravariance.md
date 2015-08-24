@@ -120,7 +120,7 @@ As you can see, nothing tricky here. We just apply the `(a -> b)` function on th
 resulting `U a` so that we can pass it to `u`, and we just `runU` the whole thing.
 
 A few friends of mine – not **Haskeller** though – told me things like *“That’s just theory
-bullshit, no one needs to know what a contravariant thingy stuff is!”. Well, here’s an example:
+bullshit, no one needs to know what a contravariant thingy stuff is!”*. Well, here’s an example:
 
 ```haskell
 newtype Color = Color {
