@@ -44,8 +44,8 @@ drawbacks:
     draw something; what happens if we forget to call a `sendUniform`? If we haven’t sent the
     uniform yet, we might have an undefined behavior. If we already have, we will *override* all
     future draws with that value, which is very wrong… ;
-  - with that way of representing uniforms, we have a very imperative interface; we can do much
-    better than that in **Haskell**.
+  - with that way of representing uniforms, we have a very imperative interface; we can have a more
+    composable and pure approach than that, hence enabling us to gain in power and flexibility.
 
 # What luminance used to do
 
