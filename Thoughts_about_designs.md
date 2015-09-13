@@ -60,7 +60,7 @@ map to each others?
 
 The problem with massive libraries is the tight bound it creates between the libraries and the
 developers. It’s very hard with such libraries to say that you can use it whenever you want because
-you perfectly know it. You could even just need a few things from it; like, the *SQL* part. You’ll
+you perfectly know them. You could even just need a few things from it; like, the *SQL* part. You’ll
 then have to install a lot of code you’ll perhaps use 10% of.
 
 # KISS
