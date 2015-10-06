@@ -2,7 +2,7 @@
 
 From [luminance-0.1](https://hackage.haskell.org/package/luminance-0.1) to
 [luminance-0.2](https://hackage.haskell.org/package/luminance-0.2) included, it was not possible to
-use any textures types different than two-dimensional textures. This blog entry tags the new
+use any texture types different than two-dimensional textures. This blog entry tags the new
 release, [luminance-0.3](https://hackage.haskell.org/package/luminance-0.3), which adds support for
 several kinds of texture.
 
@@ -27,20 +27,20 @@ Basically, you have three functions to know:
   - [`uploadSub`](https://hackage.haskell.org/package/luminance-0.3/docs/Graphics-Luminance-Texture.html#v:uploadSub),
     used to upload texels to a subpart of the texture ;
   - [`fillSub`](https://hackage.haskell.org/package/luminance-0.3/docs/Graphics-Luminance-Texture.html#v:fillSub),
-    used to fill – /clear/ – a subpart of the texture with a given value.
+    used to fill – *clear* – a subpart of the texture with a given value.
 
 All those functions work on `(Texture t) => t`, so it will work with all kinds of texture.
 
 ## Cubemaps
 
 [`Cubemap`s](https://hackage.haskell.org/package/luminance-0.3/docs/Graphics-Luminance-Texture.html#t:Cubemap)
-are also included. They work like other textures but add the concept of /faces/. Feel free to dig in
+are also included. They work like other textures but add the concept of *faces*. Feel free to dig in
 the documentation for further details.
 
 # What’s next?
 
-I need to find a way to wrap /texture arrays/, which are very nice and useful for
-/layered rendering/. After that, I’ll try to expose the change to the framebuffers so that we can
+I need to find a way to wrap *texture arrays*, which are very nice and useful for
+*layered rendering*. After that, I’ll try to expose the change to the framebuffers so that we can
 create framebuffers with cubemaps or that kind of cool feature.
 
 In the waiting, have a good a week!
