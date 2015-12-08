@@ -1,12 +1,12 @@
 # luminance 0.8 and existential quantification
 
 It’s been a while I haven’t released anything on my blog. I just wrote a few changes for the latest
-version of luminance, [luminance-0.8.1](https://hackage.haskell.org/package/luminance-0.8.1) and I
+version of luminance, [luminance-0.8.2](https://hackage.haskell.org/package/luminance-0.8.2) and I
 decided to write about it because I think those changes are interesting on a Haskell level.
 
 ## The problem
 
-If you haven’t read the [changelog](https://hackage.haskell.org/package/luminance-0.8.1/changelog)
+If you haven’t read the [changelog](https://hackage.haskell.org/package/luminance-0.8.2/changelog)
 yet, I changed the `createProgram` function and the way it handles uniform interfaces. In
 luminance < 0.8, you were provided with as many functions as there are uniform kinds. Up to now,
 luminance supports two uniform kinds:
@@ -21,7 +21,7 @@ UniformInterface m (U (Region rw (UB a)))` to map whichever uniforms you wanted 
 The issue with that is that it requires to break the interface of `createProgram` each time we want
 to add a new kind of uniform, and it’s also [a pretty hard to read function signature](https://hackage.haskell.org/package/luminance-0.7.2/docs/Graphics-Luminance-Shader-Program.html#v:createProgram)!
 
-So… how does luminance-0.8.1 solve that?
+So… how does luminance-0.8 solve that?
 
 ## (Generalized) Algebraic data types, rank-2 and existential quantification
 
