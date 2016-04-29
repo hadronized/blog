@@ -99,6 +99,7 @@ The documentation is not complete yet but I put some effort document almost ever
 both the packages here:
 
 [luminance-0.1.0](https://crates.io/crates/luminance)
+
 [luminance-gl-0.1.0](https://crates.io/crates/luminance-gl)
 
 I’ll write another article about how to use *luminance* as soon as possible!
