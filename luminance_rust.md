@@ -1,4 +1,4 @@
-I wanted to write that new article to discuss about something important I’ve been doing for a
+I wanted to write that new article to discuss about something important I’ve been doing for several 
 weeks. It’s actually been *a month* that I’ve been working on *luminance*, but not in the usual
 way. Yeah, I’ve put my *Haskell* experience aside to… port *luminance* into *Rust*! There are
 numerous reasons why I decided to jump in and I think it could be interesting for people to know
