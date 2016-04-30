@@ -71,7 +71,7 @@ game in *Haskell* – I qualify myself as a *Haskeller* and I’ve not been wri
 the joy of writing it. However, the way I use *Haskell* with *luminance* shouldn’t require all the
 overhead – and profiling got me right, almost no GC was involved.
 
-So… I look into *Rust* and discovered and learned the language in only three days. I think it’s due
+So… I looked into *Rust* and discovered and learned the language in only three days. I think it’s due
 to the fact that *Rust*, which is simpler than *Haskell* in terms of type system features and has
 almost everything taken from *Haskell*, is, to me, an **imperative Haskell**. It’s like having a
 *Haskell* minus a few abstraction tools – HKT (but they’ll come soon), GADTs, fundeps, kinds,
