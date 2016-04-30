@@ -95,13 +95,13 @@ I won’t say much today because I’m working on a [demoscene](https://en.wikip
 production using *luminance*. I want it to be a proof that the framework is usable, works and acts
 as a first true example. Of course, the code will be open-source.
 
-The documentation is not complete yet but I put some effort document almost everything. You’ll find
-both the packages here:
+The documentation is not complete yet but I put some effort documenting almost everything. You’ll
+find both the packages here:
 
 [luminance-0.1.0](https://crates.io/crates/luminance)
 
 [luminance-gl-0.1.0](https://crates.io/crates/luminance-gl)
 
-I’ll write another article about how to use *luminance* as soon as possible!
+I’ll write another article on how to use *luminance* as soon as possible!
 
 Keep the vibe!
