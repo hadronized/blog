@@ -47,7 +47,7 @@ with *Haskell*, it doesn’t have a *garbage collector*, so you have to handle m
 not really. *Rust* has several very interesting concepts to handle memory in a very nice way. For
 instance, objects’ memory is held by *scopes* – which have *lifetimes*.
 [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) is a very well known
-use of that concept and is important in *Rust*. You can glue code to your type that will be run when
+use of that concept and is important in *Rust*. You can glue code to your type that will be ran when
 an instance of that type dies, so that you can clean up memory and scarce resources.
 
 *Rust* has the concept of *lifetimes*, used to give names to scopes and specify how long an object
