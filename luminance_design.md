@@ -138,7 +138,7 @@ A `RenderCommand` gathers all the information required to render a `Tessellation
 
 - the blending equation, source and destination blending factors
 - whether the depth test should be performed
-- an update function to update the `Program` being in use – so that each object can has different
+- an update function to update the `Program` being in use – so that each object can have different
   properties used in the shader program
 - a reference to the `Tessellation` to render
 - the number of instances of the `Tessellation` to render
@@ -179,8 +179,8 @@ thing, I’ve been told…
 > *sneaking out…*
 
 Feel free to dig in the code of Céleri Rémoulade [here](https://github.com/phaazon/celeri-remoulade).
-It’s demoscene code, so it had been rushed on before the release – read: it’s not as read as I wanted
-it to be.
+It’s demoscene code, so it had been rushed on before the release – read: it’s not as clean as I
+wanted it to be.
 
 I’ll provide you with more information in the next weeks, but I prefer spending my spare time
 writing code than explaining what I’m gonna do – and missing the time to actually do it. ;)
