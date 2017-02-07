@@ -44,7 +44,7 @@ So let’s rewrite the `Alto::open` function to make it clearer:
 fn Alto::open<'a, 's, S: Into<Option<&'s CStr>>>(&'a self, spec: S) -> AltoResult<Device<'a>> // exact same thing as above
 ```
 
-So, what you can see here is that the `Device` must be valid for the same lifetime has the reference we pass in. Which means that `Device` cannot outlive the reference. Hence, it cannot outlive the
+So, what you can see here is that the `Device` must be valid for the same lifetime as the reference we pass in. Which means that `Device` cannot outlive the reference. Hence, it cannot outlive the
 `Alto` object.
 
 ---
@@ -81,8 +81,10 @@ Ok, ok. So, what’s the problem then?!
 
 # The (real) problem
 
-The snippet of code above about how to create the three objects is straight-forward (though we don’t take into account error, but that’s another topic). However, in my demoscene framework, I really don’t
-people to use that kind of types. The framework should be completely agnostic about which technology or API is used internally. For my purposes, I just need a single type with a few methods to work with it.
+The snippet of code above about how to create the three objects is straight-forward (though we don’t take into account errors, but that’s another topic). However, in my demoscene framework, I really don’t
+want people to use that kind of types. The framework should be completely agnostic about which technology or API is used internally. For my purposes, I just need a single type with a few methods to work
+with.
+
 Something like that:
 
 ```rust
@@ -105,14 +107,14 @@ impl Drop for Audio {
 }
 ```
 
-This is a very simple interface, yet I don’t need much. `Audio::set_playback_cursor` is cool when I debug my demos in realtime by clicking a time panel to quickly jump to a part of the music.
+This is a very simple interface, yet I don’t need more. `Audio::set_playback_cursor` is cool when I debug my demos in realtime by clicking a time panel to quickly jump to a part of the music.
 `Audio::toggle()` enables me to pause the demo to inspect an effect in the demo. Etc.
 
 However, how can I implement `Audio::new`?
 
 # The (current) limits of borrowing
 
-The problem kicks in as we need to wrap the three types – `Alto`, `Device` and `Context` – into the fields of `Audio`:
+The problem kicks in as we need to wrap the three types – `Alto`, `Device` and `Context` – as the fields of `Audio`:
 
 ```rust
 struct Audio<'a> {
@@ -122,7 +124,7 @@ struct Audio<'a> {
 }
 ```
 
-If we do this, we have a problem. Even though the type is correct, we cannot correctly implement `Audio::new`. Let’s try:
+We have a problem if we do this. Even though the type is correct, we cannot correctly implement `Audio::new`. Let’s try:
 
 ```rust
 impl<'a> Audio<'a> {
@@ -176,7 +178,7 @@ note: borrowed value must be valid for the lifetime 'a as defined on the body at
 error: aborting due to 2 previous errors
 ```
 
-What’s going on here? Well, we’re hitting a problem called the problem of **self-borrowing**. Look at the two first lines of our implementation of `Audio::new`:
+What’s going on here? Well, we’re hitting a problem called the problem of **self-borrowing**. Look at the first two lines of our implementation of `Audio::new`:
 
 ```rust
 let alto = Alto::load_default(None).unwrap();
@@ -184,29 +186,29 @@ let dev = alto.open(None).unwrap();
 ```
 
 As you can see, the call to `Alto::open` borrows `alto` – via a `&Alto` reference. And of course, you cannot move a value that is borrowed – that would invalidate all the references pointing to it.
-We also have another problem: imagine we could do that. All types implement `Drop`. Because they basically all have the same lifetime, there’s no way to know which one borrows information from another. The
-*dropchecker* has no way to know that. It will then refuse to create objects like this, because dropping might be unsafe in that case.
+We also have another problem: imagine we could do that. All those types implement `Drop`. Because they basically all have the same lifetime, there’s no way to know which one borrows information from whom.
+The *dropchecker* has no way to know that. It will then refuse to code creating objects of this type, because dropping might be unsafe in that case.
 
 # What can we do about it?
 
-Currently, this problem is linked to the fact that the lifetime system is a bit too restrictive and doesn’t allow for **self-borrowing**. Plus, you also have the *dropchecker* issue to figure out. Even though
-we were able to bring in `alto` and `device` altogether, how do you handle `context`? The *dropchecker* doesn’t know which one must be dropped first – there’s no obvious link at this stage between `alto` and
-all the others, because that link was done with a reference to `alto` that died – because we’re moving out of the scope of the `Audio::new` function.
+Currently, this problem is linked to the fact that the lifetime system is a bit too restrictive and doesn’t allow for **self-borrowing**. Plus, you also have the *dropchecker* issue to figure out. Even
+though we were able to bring in `alto` and `device` altogether, how do you handle `context`? The *dropchecker* doesn’t know which one must be dropped first – there’s no obvious link at this stage between
+`alto` and all the others anymore, because that link was made with a reference to `alto` that died – we’re moving out of the scope of the `Audio::new` function.
 
 ![](http://phaazon.net/pub/rust_self_borrowing.jpg)
 
-That’s a bit tough. The current solution I implemented to fix the issue is okish, but I dislike it because it adds a significant performance overhead: I just move the initialization code in a thread that
-stays awake until the `Audio` object lives, and I use a synchronized channel to communicate with the objects in that thread. That works because the thread provides us with a stack, that is the support of
+That’s a bit tough. The current solution I implemented to fix the issue is ok–ish, but I dislike it because it adds a significant performance overhead: I just moved the initialization code in a thread that
+stays awake until the `Audio` object dies, and I use a synchronized channel to communicate with the objects in that thread. That works because the thread provides us with a stack, that is the support of
 lifetimes – think of scopes.
 
-Another solution would be to move that initialization code in a function that would accept a closure – your application. Once everything is initialized, the closure is called with a few callbacks to toggle /
-set the cursor of the object leaving “behind” on the stack. I don’t like that solution because it’s *unsound* and modifies the main design – having an `Audio` object.
+Another solution would be to move that initialization code in a function that would accept a closure – your application. Once everything is initialized, the closure is called with a few callbacks to
+toggle / set the cursor of the object living “behind” on the stack. I don’t like that solution because it modifies the main design – having an `Audio` object was the goal.
 
 Other solutions are:
 
 - `std::mem::transmute` to remove the lifetimes (replace them with `'static`). That’s **hyper dangerous** and we are just breaking Rust’s lifetimes… *not okay* :(
-- change our design to meet the same as alto (in a word: use the same three objects)
-- cry deeply.
+- change our design to meet the same as alto’s (in a word: use the same three objects)
+- cry deeply
 
 I don’t have a satisfying solution yet to that problem. My thread solution works and lets me have a single type abstracting all of that, but having a thread for such a thing is a waste of resources to me. I
 think I’ll implement the closure solution as, currently, it’s not possible to embed in struct lifetimes’ semantics / logic. I guess it’s okay; I guess the problem is also linked to the fact the concept is
