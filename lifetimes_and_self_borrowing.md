@@ -1,5 +1,5 @@
 Lately, I’ve been playing around with [alto](https://crates.io/crates/alto) in my demoscene framework. This crate in the *replacement of [openal-rs](https://crates.io/crates/openal-rs)* as **openal-rs** has
-been deprecated because *unsound*. It’s a wrapper over [OpenAL](https://www.openal.org), which enables you to play 3D sound and gives you several physical properties and effects you can apply.
+been deprecated because *unsound*. It’s a wrapper over [OpenAL](https://www.openal.org), which enables you to play 3D sounds and gives you several physical properties and effects you can apply.
 
 # The problem
 
@@ -10,7 +10,7 @@ the API, you need three objects:
 - a `Device` object, a regular device (a sound card, for example)
 - a `Context` object, used to create audio resources, handle the audio context, etc.
 
-There are well-defined relationships between those objects that state about their lifetimes. An `Alto` object must outlive both the `Device` and the `Context` and the `Device` must outlive the `Context`.
+There are well-defined relationships between those objects that state about their lifetimes. An `Alto` object must outlive the `Device` and the `Device` must outlive the `Context`.
 Basically:
 
 ```rust
@@ -19,15 +19,15 @@ let dev = alto.open(None).unwrap(); // open the default device
 let ctx = dev.new_context(None).unwrap(); // create a default context with no OpenAL extension
 ```
 
-As you can see here, the lifetimes are not violated, because `alto` outlive `dev` which outlives `ctx`. Let’s dig in the type and function signatures to get the lifetimes right
-(documentation [here](https://docs.rs/alto/1.0.5/alto).
+As you can see here, the lifetimes are not violated, because `alto` outlives `dev` which outlives `ctx`. Let’s dig in the type and function signatures to get the lifetimes right
+(documentation [here](https://docs.rs/alto/1.0.5/alto)).
 
 ```rust
 fn Alto::open<'s, S: Into<Option<&'s CStr>>>(&self, spec: S) -> AltoResult<Device>
 ```
 
 The `S` type is just a convenient type to select a specific implementation. We need the default one, so just pass `None`. However, have a look at the result. `AltoResult<Device>`. I told you about
-lifetime relationship. This one might be tricky, but you always have to wonder “is there an elided lifetime here?”. Look at the `Device` type:
+lifetime relationships. This one might be tricky, but you always have to wonder “is there an elided lifetime here?”. Look at the `Device` type:
 
 ```rust
 pub struct Device<'a> { /* fields omitted */ }
@@ -174,7 +174,6 @@ note: borrowed value must be valid for the lifetime 'a as defined on the body at
    |                    ^
 
 error: aborting due to 2 previous errors
-
 ```
 
 What’s going on here? Well, we’re hitting a problem called the problem of **self-borrowing**. Look at the two first lines of our implementation of `Audio::new`:
