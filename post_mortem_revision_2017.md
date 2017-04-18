@@ -223,3 +223,60 @@ left framebuffer and then the right one – and apply the appropriate blending.
 
 I’m not sure about performance here, but I feel like this is the wrong way to go – bandwidth! I
 need to profile.
+
+## On a general note: data vs. transformations
+
+My philosphy is that code should be about transformation, not data. That’s why I love Haskell.
+However, in the demoscene world, it’s very common to move data directly into functions – think of
+all those fancy shaders you see everywhere, especially on shadertoy. As soon as I see a data
+constant in my code, I think “Wait; isn’t there a way to remove that from the function and have
+access to it as an input?”
+
+This is important, and that’s the direction I’ll take from now on for the future versions of my
+frameworks.
+
+# What went right!
+
+A lot as well!
+
+## Hot reloading
+
+Hot reloading was *the* thing I needed. A hot-reload everything. I even hot-reload the tessellation
+of the objects (.obj), so that I can change the shape / resolution of a native object and I don’t
+have to relaunch the application. I saved a lot of precious time thanks to that feature.
+
+## Live edition in JSON
+
+I had that idea pretty quickly as well. A lot of objects – among splines – live in JSON files. You
+edit the file, save it and tada: the object has changed in the application – hot reloading! The JSON
+was especially neat to handle splines of positions, colors and masks – it went pretty bad and wrong
+with orientations, but I already told you that.
+
+## Compositing
+
+As said before, compositing was also a win, because I lifted the concept up to the Rust AST,
+enabling me to express interesting rendering pipeline just by using operators like `*`, `+` and
+some combinators of my own (like `over`).
+
+## Editing
+
+Editing was done with a cascade of types and objects:
+
+- a `Timeline` holds several `Track`s and `Overlap`s;
+- a `Track` holds several `Cuts`;
+- a `Cut` holds information about a `Clip`: when the cut starts and ends in the clip and when such a
+  cut should be placed in the track;
+- a `Clip` contains code defining a part of the scene (Rust code, can’t live in JSON for obvious
+  reasons;
+- an `Overlap` is a special object used to fold several nodes if several cuts are triggered at the
+  same time; it’s used for transitions mostly;
+- alternatively, a `TimelineManifest` can be used to live-edit all of this (the JSON for the cuts
+  has a string reference for the clip, and a map to actual code must be provided when folding the
+  manifest into an object of type `Timeline`).
+
+I think such a system is very neat and helped me a lot to remove naive conditions (like timed
+if-else if-else if-else if…-else nightmare). With that system, there’s only one test per frame to
+determine which cuts must be rendered (well, actually, one per track), and it’s all declarative.
+Kudos.
+
+##
