@@ -26,11 +26,11 @@ it would be neat if I could port the demo to Windows. I rushed like a fool to m
 forked and modified my OpenAL dependency! – and I did it in 35 minutes. I’m still a bit surprised
 yet proud!
 
-Anyways, this post is not about bragging. It’s about hindsight. I did that for
+Anyways, this post is not about bragging. It’s about hindsight. It’s a post-mortem. I did that for
 [Céleri Rémoulade](http://www.pouet.net/prod.php?which=67966) as I was the only one working on it –
 music, gfx, direction and obviously the Rust code. I want to draw a list of *what went wrong* and
 *what went right*. In the first time, for me. So that I have enhancement axis for the next set of
-demos I’ll do. And for sharing those thoughts so that people can have a sneak peek into the
+demos I’ll make. And for sharing those thoughts so that people can have a sneak peek into the
 internals of what I do mostly – I do a lot of things! :D – as a hobby on my spare time.
 
 # What went wrong
@@ -45,9 +45,9 @@ With that version of **spectra**, I added the possibility to *hot-reload* almost
 a resource: shaders, textures, meshes, objects, cameras, animation splines, etc. I edit the file,
 and as soon as I save it, it gets hot-reloaded in realtime, without having to interact with the
 program (for curious ones, I use the straight-forward [notify crate](https://crates.io/crates/notify)
-for registering callbacks to handle file system changes). This is very great and I save a **lot** of
-time – Rust compilation is slow, and that’s a lesson I had learned from Céleri Rémoulade: keeping
-closing the program, make a change, compiling, running is a wast of time.
+crates for registering callbacks to handle file system changes). This is very great and it saves a
+**lot** of time – Rust compilation is slow, and that’s a lesson I’ve learned from Céleri Rémoulade:
+keeping closing the program, making a change, compiling, running is a waste of time.
 
 So what’s the issue with that? Well, the main problem is the fact that in order to implement
 hot-reloading, I wanted performance and something very simple. So I decided to use *shared mutable
@@ -58,41 +58,68 @@ specific cases, you need such side-effects. I’m balanced but I think it’s t
 
 Anyway, in Rust, shared mutable state is implemented via two types: `Rc/Arc` and `Cell/RefCell`.
 
-The former is a runtime implementation of the *borrowing rules* and enables you to share a pointer.
-The borrowing rules are not enforced at compile-time anymore but dynamically checked. It’s great
-because in some time, you can’t know how long your values will be borrowed or live. It’s also
+The former is a runtime implementation of the Rust *borrowing rules* and enables you to share a
+value. The borrowing rules are not enforced at compile-time anymore but dynamically checked. It’s
+great because in some cases, you can’t know how long your values will be borrowed or live. It’s also
 dangerous because you have to pay extra attention to how you borrow your data – since it’s checked
 at runtime, you can crash your program if you’re not extra careful.
 
 > `Rc` means *ref counted* and `Arc` means *atomic-ref counted*. The former is for values that stay
-> on the same and single thread; the latter is for sharing the pointer between threads.
+> on the same and single thread; the latter is for sharing between threads.
 
 `Cell/RefCell` are very interesting types that provide *internal mutation*. By default, Rust gives
 you *external mutation*. That is, if you have a value and its address, can mutate what you have at
 that address. On the other hand, *internal mutation* is introduced by the `Cell` and `RefCell`
 types. Those types enable you to mutate the content of an object stored at a given address without
-having the exterior mutatation property. It’s a bit technical and related to Rust, but it’s often
-used to mutate the content of a value via a function taking an immutable value.
+having the exterior mutation property. It’s a bit technical and related to Rust, but it’s often
+used to mutate the content of a value via a function taking an immutable value. Imagine an immutable
+value that only holds a pointer. Exterior mutation would give you the power to change what this
+pointer points to. Interior mutation would give you the power to change the object pointed by this
+pointer.
 
 > `Cell` only accepts values that can be copied bit-wise and `RefCell` works with references.
 
 Now, if you combine both – `Rc<RefCell<_>>`, you end up with a shareable – `Rc<_>` – mutable –
 `RefCell<_>` – value. If you have a value of type `Rc<RefCell<u32>>` for instance, that means you
-can clone that value and store it everywhere in the same thread, and at any time, borrow it and 
-inspect and/or mutate its content. All copies of the values will observe the change. It’s a bit like
-C++’s `shared_ptr`, but it’s safer – thank you Rust!
+can clone that integer and store it everywhere in the same thread, and at any time, borrow it and 
+inspect and/or mutate it. All copies of the values will observe the change. It’s a bit like C++’s
+`shared_ptr`, but it’s safer – thank you Rust!
 
 So what went wrong with that? Well, the borrow part. Because Rust is about safety, you still need to
 tell it how you want to borrow at runtime. This is done with the [`RefCell::borrow()`](https://doc.rust-lang.org/std/cell/struct.RefCell.html#method.borrow]
 and [`RefCell::borrow_mut()`](https://doc.rust-lang.org/std/cell/struct.RefCell.html#method.borrow_mut)
-functions. Those functions return a special object that borrows the pointed object as long as it
-lives. Then, when it goes out of scope, it releases the borrow.
+functions. Those functions return special objects that borrow the ref as long as it lives. Then,
+when it goes out of scope, it releases the borrow.
 
 So any time you want to use an object that is hot-reloadable with my framework, you have to call
 one of the borrow functions presented above. You end up with a lot of borrows, and you have to keep
 in mind that you can litterally crash your program if you violate the borrowing rules. This is a
-nasty issue. So far, I haven’t really spent time trying to fix that, but that something I have to
-figure out.
+nasty issue. For instance, consider:
+
+```rust
+let cool_object = …; // Rc<RefCell<Object>>, for instance
+let cool_object_ref = cool_object.borrow_mut();
+// mutate cool_object
+
+just_read(&cool_object.borrow()); // borrowing rule violated here because a mut borrow is in scope
+```
+
+As you can see, it’s pretty simple to fuck up the program if you don’t pay extra attention to what
+you’re doing with your borrow. To solve the problem above, you’d need a smaller scope for the
+mutable borrow:
+
+```rust
+let cool_object = …; // Rc<RefCell<Object>>, for instance
+
+{
+  let cool_object_ref = cool_object.borrow_mut();
+  // mutate cool_object
+}
+
+just_read(&cool_object.borrow()); // borrowing rule violated here because a mut borrow is in scope
+```
+
+So far, I haven’t really spent time trying to fix that, but that’s something I have to figure out.
 
 ## Resources declaration in code
 
@@ -148,3 +175,13 @@ orientations data. In **spectra**, an orientation is encoded with a
 [unit quaternion](https://en.wikipedia.org/wiki/Quaternion#Unit_quaternion). This is a 4-floating
 number – hypercomplex. Editing those numbers in a plain JSON file is… challenging! I think I really
 need some kind of animation editor to edit the spline.
+
+## Video capture
+
+The Youtube [capture](https://www.youtube.com/watch?v=OemyLQbDTSk) was made directly in the demo.
+At the end of each frame, I dump the frame into a .png image (with a name including the number of
+the frame). Then I simply use ffmpeg to build the video.
+
+Even though this is not very important, I had to add some code into the production code of the demo
+and I think I could just refactor that into **spectra**. I’m talking about three or four lines of
+code. Not a big mess.
