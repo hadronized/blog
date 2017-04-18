@@ -157,6 +157,20 @@ This is even worse with the way I handle texts. It’s all `&'static str` declar
 called `script.rs` with the same insane load of `let`. Then I rasterize them in a function and use
 them in a very specific way regarding the time they appear. Not fun.
 
+## Still not enough data-driven
+
+As said above, the cache is a great help and enables some data-driven development, but that’s not
+enough. The `main.rs` file is more than 600 lines long and 500 lines are just declarations of of 
+clips (editing) and are all very alike. I intentionally didn’t use the runtime version of the
+timeline – but it’s already implemented – because I was editing a lot of code at that moment, but
+that’s not a good excuse. And the timeline is just a small part of it (the cuts are something like
+10 lines long) and it annoyed me at the very last part of the development, when I was synchronizing
+the demo with the soundtrack.
+
+I think the real problem is that the clips are way too abstract to be a really helpful abstraction.
+Clips are just lambdas that consume time and output a node. This also has implication (you cannot
+borrow something for the node in your clip because of borrowing rules ; duh!).
+
 ## Animation edition
 
 Most of the varying things you can see in my demos are driven by animation curves – splines. The
@@ -188,7 +202,7 @@ code. Not a big mess.
 
 ## Compositing
 
-This is will appear in both the pros. and cons. Compositing, in spectra, is implemented via the
+This is will appear as both pros. and cons. Compositing, in spectra, is implemented via the
 concept of *nodes*. A node is just an algebraic data structure that contains *something* that can
 be connected to *another thing* to compose a render. For instance, you get find nodes of type
 *render*, *color*, *texture*, *fullscreen effects* and *composite* – the latter is used to mix
