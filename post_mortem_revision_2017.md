@@ -185,3 +185,27 @@ the frame). Then I simply use ffmpeg to build the video.
 Even though this is not very important, I had to add some code into the production code of the demo
 and I think I could just refactor that into **spectra**. I’m talking about three or four lines of
 code. Not a big mess.
+
+## Compositing
+
+This is will appear in both the pros. and cons. Compositing, in spectra, is implemented via the
+concept of *nodes*. A node is just an algebraic data structure that contains *something* that can
+be connected to *another thing* to compose a render. For instance, you get find nodes of type
+*render*, *color*, *texture*, *fullscreen effects* and *composite* – the latter is used to mix
+nodes between them.
+
+Using the nodes, you can build a tree. And the cool thing is that I implemented the most common
+operators from `std::ops`. I can then apply a simple color mask to a render by doing something like
+
+```rust
+render_node * RGBA::new(r, g, b, a).into()
+```
+
+This is extremely user-friendly and helped me a lot to tweak the render (the actual ASTs are more
+complex than that and react to time, but the idea is similar). However, there’s a problem. In the
+actual implementation, the *composite* node is not smart enough: it blends two nodes by rendering
+them into a separate framebuffer (hence two framebuffers), then sample via a fullscreen quad the
+left framebuffer and then the right one – and apply the appropriate blending.
+
+I’m not sure about performance here, but I feel like this is the wrong way to go – bandwidth! I
+need to profile.
