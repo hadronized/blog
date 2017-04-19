@@ -279,4 +279,15 @@ if-else if-else if-else if…-else nightmare). With that system, there’s only 
 determine which cuts must be rendered (well, actually, one per track), and it’s all declarative.
 Kudos.
 
-##
+## Resources loading was insanely fast
+
+I thought I’d need some kind of loading bars, but everything loaded so quickly that I decided it’d
+be a wast of time. Even though I might end up modifying the way resources are loaded, I’m pretty
+happy with it.
+
+# Conclusion
+
+Writing that demo in such a short period of time – I have a job, a social life, other things I
+enjoy, etc. – was such a challenge! But it was also the perfect project to stress test my framework.
+I saw a lot of issues while building my demo with spectra and a lot of “woah, that’s actually pretty
+great doing this that way!”.
