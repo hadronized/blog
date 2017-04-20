@@ -3,7 +3,8 @@ On the weekend of 14th – 17th of April 2017, I was attending for the forth tim
 far in the world and gathers around a thousand people coming from around the world. If you’re a
 demomaker, a demoscene passionated or curious about it, that’s the party to go. It hosts plenty of
 competitions, among *photos*, *modern graphics*, *oldschool graphics*, *games*, *size-limited demos*
-(what we call *intros*), *demos*, *tracked and streamed music*, etc. It’s massive.
+(what we call *intros*), *demos*, *tracked and streamed music*, *wild*, *live compo*, etc. It’s
+massive.
 
 So, as always, once a year, I attend Revision. But this year, it was a bit different for me. Revision
 is *very* impressive and most of the *“big demogroups”* release their productions they’ve been
@@ -11,22 +12,22 @@ working on for months or even years. I tend to think *“If I release something 
 kind of muted by all those massive productions.”* Well, less than two weeks before Revision 2017, I
 was contacted by another demogroup. They asked me to write an *invitro* – a kind of *intro* or
 *demo* acting as a communication production to invite people to go to another party. In my case, I
-was proposed to make the [Outline 2017](http://outlinedemoparty.nl) invitro. Ouline was the first
+was proposed to make the [Outline 2017](http://outlinedemoparty.nl) invitro. Outline was the first
 party I attended years back then, so I immediately accepted and started to work on something. That
 was something like 12 days before the Revision deadline.
 
 I have to tell. It was a challenge. All productions I wrote before was made in about a month and a
 half and featured less content than the Outline Invitation. I had to write a lot of code from
 scratch. *A lot*. But it was also a very nice project to test my demoscene framework, written in
-Rust – you can find [spectra here](https://github.com/phaazon/spectra) for now; it’s unreleased by
-the time I’m writing this but I plan to push it onto crates.io very soon.
+Rust – you can find [spectra here](https://github.com/phaazon/spectra) or
+[here](https://crates.io/crates/spectra)
 
 An hour before hitting the deadline, the beam team told me their Ubuntu compo machine died and that
 it would be neat if I could port the demo to Windows. I rushed like a fool to make a port – I even
 forked and modified my OpenAL dependency! – and I did it in 35 minutes. I’m still a bit surprised
-yet proud!
+yet proud that I made it through!
 
-Anyways, this post is not about bragging. It’s about hindsight. It’s a post-mortem. I did that for
+Anyway, this post is not about bragging. It’s about hindsight. It’s a post-mortem. I did that for
 [Céleri Rémoulade](http://www.pouet.net/prod.php?which=67966) as I was the only one working on it –
 music, gfx, direction and obviously the Rust code. I want to draw a list of *what went wrong* and
 *what went right*. In the first time, for me. So that I have enhancement axis for the next set of
@@ -45,9 +46,9 @@ With that version of **spectra**, I added the possibility to *hot-reload* almost
 a resource: shaders, textures, meshes, objects, cameras, animation splines, etc. I edit the file,
 and as soon as I save it, it gets hot-reloaded in realtime, without having to interact with the
 program (for curious ones, I use the straight-forward [notify crate](https://crates.io/crates/notify)
-crates for registering callbacks to handle file system changes). This is very great and it saves a
+crate for registering callbacks to handle file system changes). This is very great and it saves a
 **lot** of time – Rust compilation is slow, and that’s a lesson I’ve learned from Céleri Rémoulade:
-keeping closing the program, making a change, compiling, running is a waste of time.
+keeping closing the program, making a change, compiling and then running is a waste of time.
 
 So what’s the issue with that? Well, the main problem is the fact that in order to implement
 hot-reloading, I wanted performance and something very simple. So I decided to use *shared mutable
@@ -56,13 +57,13 @@ Haskell world, we try hard to avoid using shared states – `IORef` – because 
 transparent and reasoning about it is difficult. However, I tend to strongly think that in some very
 specific cases, you need such side-effects. I’m balanced but I think it’s the way to go.
 
-Anyway, in Rust, shared mutable state is implemented via two types: `Rc/Arc` and `Cell/RefCell`.
+Well, in Rust, shared mutable state is implemented via two types: `Rc/Arc` and `Cell/RefCell`.
 
 The former is a runtime implementation of the Rust *borrowing rules* and enables you to share a
 value. The borrowing rules are not enforced at compile-time anymore but dynamically checked. It’s
-great because in some cases, you can’t know how long your values will be borrowed or live. It’s also
-dangerous because you have to pay extra attention to how you borrow your data – since it’s checked
-at runtime, you can crash your program if you’re not extra careful.
+great because in some cases, you can’t know how long your values will be borrowed for or live. It’s
+also dangerous because you have to pay extra attention to how you borrow your data – since it’s
+checked at runtime, you can literally crash your program if you’re not extra careful.
 
 > `Rc` means *ref counted* and `Arc` means *atomic-ref counted*. The former is for values that stay
 > on the same and single thread; the latter is for sharing between threads.
@@ -79,11 +80,11 @@ pointer.
 
 > `Cell` only accepts values that can be copied bit-wise and `RefCell` works with references.
 
-Now, if you combine both – `Rc<RefCell<_>>`, you end up with a shareable – `Rc<_>` – mutable –
-`RefCell<_>` – value. If you have a value of type `Rc<RefCell<u32>>` for instance, that means you
-can clone that integer and store it everywhere in the same thread, and at any time, borrow it and 
-inspect and/or mutate it. All copies of the values will observe the change. It’s a bit like C++’s
-`shared_ptr`, but it’s safer – thank you Rust!
+Now, if you combine both – `Rc<RefCell<_>>`, you end up with a single-thread shareable – `Rc<_>` –
+mutable – `RefCell<_>` – value. If you have a value of type `Rc<RefCell<u32>>` for instance, that
+means you can clone that integer and store it everywhere in the same thread, and at any time, borrow
+it and  inspect and/or mutate it. All copies of the value will observe the change. It’s a bit like
+C++’s `shared_ptr`, but it’s safer – thank you Rust!
 
 So what went wrong with that? Well, the borrow part. Because Rust is about safety, you still need to
 tell it how you want to borrow at runtime. This is done with the [`RefCell::borrow()`](https://doc.rust-lang.org/std/cell/struct.RefCell.html#method.borrow]
