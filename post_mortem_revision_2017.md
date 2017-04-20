@@ -34,6 +34,9 @@ music, gfx, direction and obviously the Rust code. I want to draw a list of *wha
 demos I’ll make. And for sharing those thoughts so that people can have a sneak peek into the
 internals of what I do mostly – I do a lot of things! :D – as a hobby on my spare time.
 
+> You can find the link to the production [here](http://www.pouet.net/prod.php?which=69698)
+> (there’re Youtube links if you need).
+
 # What went wrong
 
 Sooooooooo… What went wrong. Well, a lot of things! **spectra** was designed to build demo
