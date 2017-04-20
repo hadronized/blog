@@ -288,6 +288,10 @@ happy with it.
 # Conclusion
 
 Writing that demo in such a short period of time – I have a job, a social life, other things I
-enjoy, etc. – was such a challenge! But it was also the perfect project to stress test my framework.
+enjoy, etc. – was such a challenge! But it was also the perfect project to stress-test my framework.
 I saw a lot of issues while building my demo with spectra and a lot of “woah, that’s actually pretty
-great doing this that way!”.
+great doing this that way!”. I’ll have to enhance a few things, but I’ll always do that with a demo
+as a *work-in-progress* because I target pragmatism. As I released spectra on crates.io, I might end
+up writing another blog entry about it sooner or later, and even speak about it at a Rust meeting!
+
+Keep the vibe!
