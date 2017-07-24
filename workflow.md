@@ -66,11 +66,11 @@ bookmarks, etc.
 
 ![](http://phaazon.net/pub/ctrlp.png)
 
-I mapped the the file search to the `, f` keys combination and the tag fuzzy search to `, t`.
+I mapped the file search to the `, f` keys combination and the tag fuzzy search to `, t`.
 
 ## gruvbox
 
-The colorscheme I use. I don’t put an image here since you can find several examples onlines.
+The colorscheme I use. I don’t put an image here since you can find several examples online.
 
 > This colorscheme also exists for a lot of other applications, among terminals and window managers.
 
