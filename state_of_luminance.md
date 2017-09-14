@@ -19,13 +19,13 @@ dying and the Rust version has completely drifted path with it. Nevertheless, wh
 library to Rust, I imported the same “way of programming” that I had·have in Haskell – besides the
 allocation scheme; remember, I’m a demoscener, I **do care a lot about performance, CPU usage, cache
 friendliness and runtime size**. So the Rust luminance crate was made to be hybrid: it has the
-cool functional side that I imported from my Haskell codebase, and the runtime performance I wanted
+cool functional side that I imported from my Haskell codebase, and the runtime performance I wanted
 that I had when I wrote my two first 64k in C++11. I had to remove and work around some features
 that only Haskell could provide, such as higher-kinded types, type families, functional
 dependencies, GADTs and a few other things such as existential quantification (trait objects saved
 me here, even though I don’t use them that much in luminance now).
 
-I have to admit, I dithered a lot about the scope of luminance — both in Haskell and Rust. At first,
+I have to admit, I dithered a lot about the scope of luminance — both in Haskell and Rust. At first,
 I thought that it’d be great to have a *“base”* crate, hosting common and abstracted code, and
 *“backend”* crates, implementing the abstract interface. That would enable me to have several
 backends – OpenGL, Vulkan, Metal, a software implementation, something for Amiigaaaaaaa, etc.
@@ -47,7 +47,7 @@ More reading [here](http://phaazon.blogspot.fr/2016/08/luminance-designs.html).
 ## Today
 
 Today, luminance is almost stable – it still receives massive architecture redesign from time to
-time, but it’ll hit the `1.0.0` release soon. As a discussed with [kvark] lately, luminance is not
+time, but it’ll hit the `1.0.0` release soon. As discussed with [kvark] lately, luminance is not
 about the same scope as [gfx]’s one. The goals of luminance are:
 
 - To be a typesafe, stateless and bindless OpenGL framework.
@@ -57,7 +57,7 @@ about the same scope as [gfx]’s one. The goals of luminance are:
 To achieve that, luminance is written with several aspects in mind:
 
 - Allocation must be explicitely stated by the user: we must avoid as much as possible to allocate
-  things in luminance since it might become both a bottleneck and an isse to the lightweight aspect.
+  things in luminance since it might become both a bottleneck and an issue to the lightweight aspect.
 - Performance is a first priority; safety comes second. If you have a feature that can be either
   exclusively performant or safe, it must then be performant. Most of the current code is, for our
   joy, both performant and safe. However, some invariants are left around the place and you might
@@ -69,7 +69,7 @@ To achieve that, luminance is written with several aspects in mind:
 - A bit like the first point, the code must be written in a way that the generated binary is as
   small as possible. Generics are not forbidden – they’re actually recommended – but things like
   crate dependencies are likely to be forbidden (exception for the `gl` dependency, of course).
-- Windowing **must not be addressed by luminance**. This is crucial. As a demoscener, if I want to
+- Windowing **must not be addressed by luminance**. This is crucial. As a demoscener, if I want to
   write a 64k with luminance, I must be able to use a library over X11 or the Windows API to setup 
   the OpenGL context myself, set the OpenGL pointers myself, etc. This is not the typical usecase –
   who cares besides demosceners?! – but it’s still a good advantage since you end up with loose
@@ -177,9 +177,9 @@ type RGB = [f32; 3];
 type Vertex = (Position, RGB);
 
 const TRIANGLE_VERTS: [Vertex; 3] = [
-  ([-0.5, -0.5], [0.8, 0.5, 0.5]), // red bottow leftmost
+  ([-0.5, -0.5], [0.8, 0.5, 0.5]), // red bottom leftmost
   ([-0., 0.5], [0.5, 0.8, 0.5]), // green top
-  ([0.5, -0.5], [0.5, 0.5, 0.8]) // blue bottow rightmost
+  ([0.5, -0.5], [0.5, 0.5, 0.8]) // blue bottom rightmost
 ];
 ```
 
@@ -210,7 +210,7 @@ This will pass the `TRIANGLE_VERTS` vertices to the GPU. You’re given back a `
 states how vertices must be connected to each other. `TessVertices` lets you slice your vertices –
 this is typically enjoyable when you use a mapped buffer that contains a dynamic number of vertices.
 
-We’ll need a *shader* to render that triangle. First, we’ll place its code source in `data`:
+We’ll need a *shader* to render that triangle. First, we’ll place its source code in `data`:
 
     $ mkdir data
 
@@ -297,7 +297,7 @@ call such parts *nodes*) and you end up with minimal GPU state switches. The the
         objects.
 
 That deep nesting enables you to batch your objects on a very fine granularity. Also, notice that
-the function are not about slices of `Tess` or hashmaps of `Program`. The allocation scheme is
+the functions are not about slices of `Tess` or hashmaps of `Program`. The allocation scheme is
 completely ignorant about how the data is traversed, which is good: you decide. If you need to
 borrow things on the fly in a shading gate, you can.
 
@@ -319,23 +319,23 @@ entry(|_| {
 ```
 
 We just need a final thing now: since we render to the back buffer of the screen, if we want to see
-anything appear, we need to *swap the buffer chain* so that the backbuffer become the front buffer
+anything appear, we need to *swap the buffer chain* so that the back buffer become the front buffer
 and the front buffer become the back buffer. This is done by wrapping our render code in the
-[`Device::new`](https://docs.rs/luminance-glfw/0.3.2/luminance_glfw/struct.Device.html#method.draw)
+[`Device::draw`](https://docs.rs/luminance-glfw/0.3.2/luminance_glfw/struct.Device.html#method.draw)
 function:
 
 ```rust
 dev.draw(|| {
   entry(|_| {
-		pipeline(&screen, [0., 0., 0., 1.], |shd_gate| {
-			shd_gate.shade(&shader, |rdr_gate, _| {
-				rdr_gate.render(None, true, |tess_gate| {
-					let t = &triangle;
-					tess_gate.render(t.into());
-				});
-			});
-		});
-	});
+    pipeline(&screen, [0., 0., 0., 1.], |shd_gate| {
+      shd_gate.shade(&shader, |rdr_gate, _| {
+        rdr_gate.render(None, true, |tess_gate| {
+          let t = &triangle;
+          tess_gate.render(t.into());
+        });
+      });
+    });
+  });
 });
 ```
 
@@ -411,7 +411,7 @@ See the type is parametered with three type variables:
   luminance by is reserved, as it will be used later for enforcing even further type safety.
 - The third and latter is for the *uniform interface*.
 
-You guessed it: we need to change the third parameter from `()` to `TimeUniform`:
+You guessed it: we need to change the third parameter from `()` to `TimeUniform`:
 
 ```rust
 let (shader, warnings) = Program::<Vertex, (), TimeUniform>::from_strings(None, SHADER_VS, None, SHADER_FS).unwrap();
@@ -445,7 +445,8 @@ void main() {
 }
 ```
 
-And enjoy the result!
+And enjoy the result! Here’s the [gist](https://gist.github.com/phaazon/268d5c0285c6c7cba90d5cea1b99db76)
+that contains the whole `main.rs`.
 
 [luminance]: https://crates.io/crates/luminance
 [luminance-glfw]: https://crates.io/crates/luminance-glfw
