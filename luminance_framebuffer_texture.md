@@ -1,4 +1,4 @@
-I’m happily suprised that so many **Haskell** people follow
+I’m happily surprised that so many **Haskell** people follow
 [luminance](https://github.com/phaazon/luminance)! First thing first, let’s tell
 you about how it grows.
 
