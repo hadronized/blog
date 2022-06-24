@@ -572,5 +572,12 @@
     "publish_date": "2021-12-24 14:54:00 Z",
     "tags": ["advent-of-code"],
     "slug": "aoc-21-day-16"
+  },
+  {
+    "name": "Development Environments",
+    "path": "development-environments.md",
+    "publish_date": "2022-06-26 15:01:00 Z",
+    "tags": ["IDE", "shell", "terminals"],
+    "slug": "development-environments"
   }
 ]
