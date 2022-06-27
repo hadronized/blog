@@ -302,6 +302,8 @@ described above.
 
 Keep the vibe! [Reddit discussion here.]()
 
+> [Reddit discussion](https://www.reddit.com/r/programming/comments/vlp76z/development_environments_discussion_about)
+
 [kitty]: https://sw.kovidgoyal.net/kitty
 [zsh]: https://www.zsh.org
 [nushell]: https://www.nushell.sh
