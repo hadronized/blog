@@ -300,7 +300,7 @@ proved to be great ones a couple of years ago, doesn’t mean they are still a t
 I’m currently writing this very article in [neovim], in a [kitty] tab among dozens, and I just wish I had the DE I just
 described above.
 
-Keep the vibe! [Reddit discussion here.]()
+Keep the vibe!
 
 > [Reddit discussion](https://www.reddit.com/r/programming/comments/vlp76z/development_environments_discussion_about)
 
