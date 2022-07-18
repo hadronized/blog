@@ -579,5 +579,12 @@
     "publish_date": "2022-06-26 15:01:00 Z",
     "tags": ["IDE", "shell", "terminals"],
     "slug": "development-environments"
+  },
+  {
+    "name": "Useful Hop in 2022",
+    "path": "hop-2022.md",
+    "publish_date": "2022-07-18 14:26:00 Z",
+    "tags": ["hop.nvim"],
+    "slug": "hop-2022"
   }
 ]
