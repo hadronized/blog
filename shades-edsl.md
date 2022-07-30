@@ -638,6 +638,8 @@ You should also have a look at some similar yet different approaches:
 
 Keep the vibes!
 
+> [Reddit discussion](https://www.reddit.com/r/rust_gamedev/comments/wbxpp4/a_shading_language_edsl/)
+
 [shades]: https://crates.io/crates/shades
 [shades-edsl]: https://crates.io/crates/shades-edsl
 [shaders]: https://en.wikipedia.org/wiki/Shader
