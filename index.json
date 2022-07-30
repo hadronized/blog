@@ -586,5 +586,12 @@
     "publish_date": "2022-07-18 14:26:00 Z",
     "tags": ["hop.nvim"],
     "slug": "hop-2022"
+  },
+  {
+    "name": "A Rust shading language EDSL",
+    "path": "shades-edsl.md",
+    "publish_date": "2022-07-30 13:30:00Z",
+    "tags": ["shades", "shader", "rust", "EDSL"],
+    "slug": "shades-edsl"
   }
 ]
