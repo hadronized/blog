@@ -141,7 +141,7 @@ of limitations (for instance, `Eq` methods, `Ord` methods, etc. return `bool`, w
 
 The idea of [shades-edsl] is super simple: remove everything that would make [shades] usable directly by a human, and
 build a procedural macro that transforms regular Rust code into the API from [shades]. Basically, generate the [shades]
-code inside the code of a procedural macro, whicth is what humans will use.
+code inside the code of a procedural macro, which is what humans will use.
 
 The way it works is pretty straight-forward to understand: you write your shading code in a `shades! { … }` block.
 Everything in that block is reinterpreted and replaced by [shades] symbols: builders, method calls, etc. etc.
