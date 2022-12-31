@@ -48,7 +48,7 @@ doing back and forth between Doom and Neovim. More on that below.
 Lately, I have been more present in the Neovim community, contributing mostly via a plugin that I have been making:
 [hop.nvim]. That plugin is a complete rewrite from scratch of [EasyMotion] (I have not even looked at how they do it on
 their side) I made by using the Neovim Lua API directly. Obviously, it provides a much better experience than
-EasyMotion **in Neovim**, simply because it uses features such as _virtual text_ and _extended marks_ and doesn not
+EasyMotion **in Neovim**, simply because it uses features such as _virtual text_ and _extended marks_ and does not
 touch the buffer, allowing to benefit from Neovim-0.5 crunchy features, such as the native LSP client and treesitter
 parsers. I also made a bunch of PRs to Neovim core, reading a bit on the C code, etc.
 
