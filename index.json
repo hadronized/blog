@@ -600,5 +600,12 @@
     "publish_date": "2022-09-06 11:30:00Z",
     "tags": ["luminance", "redesign"],
     "slug": "2022-luminance-redesign-part-1"
+  },
+  {
+    "name": "My thoughts about editors in 2022",
+    "path": "helix-2023.md",
+    "publish_date": "2023-01-01 00:00:00 Z",
+    "tags": ["editors", "productivity-platforms"],
+    "slug": "editors-in-2022"
   }
 ]
