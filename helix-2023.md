@@ -302,3 +302,5 @@ what to do next. For the time being, I wish you all a Happy New Year, lots of gr
 happy hacking, in your favorite editor, IDE or whether you pipe `echo` commands directly at the end of files!
 
 Keep the vibes!
+
+> [Discuss here](https://www.reddit.com/r/programming/comments/1007yq5/my_thoughts_about_editors_in_2022/)
