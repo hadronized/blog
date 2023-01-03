@@ -248,15 +248,15 @@ of **Helix**.
 
 So, about `mind.nvim`, I plan on rewriting the plugin as a standalone tool so that I can use it whatever the editor.
 It will probably do things like `git` when you run `git commit` (opening `$EDITOR`), but I’m still not sure exactly
-how I’m going to make it. Maybe I’ll get in touch people from [Charm](https://charm.sh/) and rewrite it using some of
-their work? I still haven’t thought about it, it’s so early.
+how I’m going to make it. Maybe I’ll get in touch with people from [Charm](https://charm.sh/) and rewrite it using some 
+of their work? I still haven’t thought about it, it’s too early.
 
-About `hop.nvim`, I plan on continuing maintaining it and fixing bugs, even though I haven’t been very active around Hop
+About `hop.nvim`, I plan on continuing maintaining it and fixing bugs, even though I haven’t been very active around `Hop`
 lately. The reason is mainly a lack of spare-time.
 
-As for This Week in **Neovim**… I honestly do not know. I discussed the project with some people from the **Neovim** core 
+As for **This Week in Neovim**… I honestly do not know. I discussed the project with some people from the **Neovim** core 
 team, and I’m a bit stuck. On one side, the community has received it pretty well, given the amount of upvotes I have
-on each of each week release on Reddit, the comments, the appreciation issues on GitHub, etc. I know people have been
+on each week release on Reddit; the comments; the appreciation issues on GitHub, etc. I know people have been
 enjoying my work, and I’m happy they do.
 
 On the other side, the core team doesn’t seem to have noticed it that much, and none of their members approached me
@@ -264,26 +264,25 @@ to talk about it. So I’m not sure what to think. The community enjoys TWiN a l
 Then I need to think about _exhaustion_: I’m really tired of maintaining TWiN. 
 
 See, the idea is to communicate, every week, about what has happened in the **Neovim** world, whether it’s core or 
-plugins. What I had initially in mind was to  _bootstrap_ the couple of first releases and let people adopt and
-contribute to it. On the 2nd of January 2023 will be released **TWiN #25**, which means that I’m currently on a 
-25 weeks streak. What it basically means is that, every  week (most of the time Sundays), I skim Reddit, GitHub 
+plugins. What I had initially in mind was to _bootstrap_ the couple of first releases and let people adopt and
+contribute to it. On the 2nd of January 2023 is released **TWiN #25**, which means that I’m currently on a 
+25 weeks streak. What it basically tells is that, every week (most of the time Sundays), I skim Reddit, GitHub 
 projects, man pages, etc. to get as much information as I can, and create a really big PR containing the weekly 
 update. That PR is merged and available on the very next day (Monday) for every neovimmers to enjoy reading on Monday 
-morning with a nice cup of coffee, tea or whatever you like
-at breakfast.
+morning with a nice cup of coffee, tea or whatever you like for breakfast.
 
 So every week, one person (me) spends hours skimming many projects, while what I thought would happen was that
-many plugin authors would contribute once every two months a very small text to explain their new plugis / change.
+many plugin authors would contribute once every two months a very small text to explain their new plugins / change.
 The difference is massive: on one side, you have a single developer doing a big amount of work… every week. On the
 other side, you would have many developers doing a very small amount of work every time they release something… which
 is clearly not every week (and even then?).
 
 I think I have enough distance with the project to admit I failed marketing my idea. Someone once told me that I was
 basically doing free advertisement for plugin authors, which is actually true. People mention they would like to 
-donate to contribute and ensure that I keep doing what I do, but I don’t money — hosting costs me 10€/month and the
-domain name is 10€/year, I can take that on my own. I want contributions. It wouldn’t cost much for a plugin author 
+donate to contribute and ensure that I keep doing what I do, but I don’t want money — hosting costs me 10€/month and the
+domain name is 10€/year, I can sustain that on my own. What I need is contributions. It wouldn’t cost much for a plugin author 
 to open a PR to [twin-contents](https://github.com/phaazon/this-week-in-neovim-contents/pulls) and add their
-update to the upcoming week. There’s a few of regular contributors, writing good PRs I rarely
+update to the upcoming week. There’s a few regular contributors, writing good PRs I rarely
 need to modify. But most of the weeks are contribution-free, and it saddens me even more when I see the reaction of
 plugin authors on Reddit, like _“Oh yeah my plugin made it to TWiN!”_ Every time I read that, I think _“Great, next
 time maybe they will be pushing the update themselves to help me?”_ And most of the time, they don’t.
