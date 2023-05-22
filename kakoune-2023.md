@@ -724,3 +724,6 @@ editors.
 
 In the meantime, have fun and use the editor you love, but remember to have a look around and stay open to change! Keep
 the vibes!
+
+> I would like to thank [@Taupiqueur](https://github.com/taupiqueur/), who played an important role into making me
+> undersand Kakoune and eventually fall in love with — the editor, I mean! :)
