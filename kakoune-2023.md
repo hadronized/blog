@@ -472,18 +472,59 @@ And here you have it! Now remember that you can combine all of this methods with
 _inside functions_, `mat` for _around type_, `mia` for _inside arguments_, and many more. Recall that you can do that
 _on each selection_, allowing for really powerful workflows.
 
+### Do I really use all that at work / spare time projects?
+
+**Hell yes.** It’s a muscular memory thing. For instance, I oftentimes the need to not only replace occurrences of 
+patterns, like `fooN` — with `N` being a number — into `logger.fooN`, **but I often need to change the structure around
+those occurrences.** And here, Helix really stands out. In Vim, you’d have to use a super ugly regex, completely blind,
+and eventually a macro. The interactive and iterative approach of Helix is so much more powerful to me. For instance,
+for the case described above: `%` to select the whole buffer, `sfoo.` to select `foo` with a single character
+afterwards, then return, `clogger.foo` to replace with `logger.foo`, and still in insert mode, `<C-r>"` to paste what
+was yanked by the `c` operation. Here, the default register, `"`, makes a _lot_ of sense, because this register is local
+to each selection, making this replace operation trivial and interactive.
+
+Another example is something like this:
+
+```rust
+const COLORS: [Color; 3] = [
+  Color {
+    r: 255,
+    g: 0,
+    b: 0,
+  },
+  Color {
+    r: 0,
+    g: 255,
+    b: 0,
+  },
+  Color {
+    r: 0,
+    g: 0,
+    b: 255,
+  },
+];
+```
+
+Imagine that you want to change every `Color` constructor to a function call, that does something like
+`Color::rgb(r, g, b)`. Doing that interactively and iteratively in Helix is so easy. I’d put my cursor anywhere in that
+block, press `mi[` to select everything inside `[]`, then `sColor<cr>` to create three cursors on the `Cursor`, and from
+that moment, it’s just ping-pong-ing between normal mode and insert mode like you would do with a single selection. You
+will be using `f`, `t`, `miw` etc. select things but the idea is the same, and the three occurrences will be updated at
+once.
+
 ## A simpler editor overall
 
 Contrary to other famous editors and IDEs, Helix is not supposed to be extendable; it doesn’t try to solve more
 problems than it should (and you will see in the Kakoune section that we can even push that to another extreme).
-Something like Neovim is a bit of a disguised IDE. Yes, a vanilly Neovim with no plugins and no configuration is just
-a very basic (and I would dare say featureless) editor. It won’t have LSP working. It won’t have tree-sitter working
+Something like Neovim is a bit of a disguised IDE. Yes, a vanilla Neovim with no plugins and no configuration is just
+a very basic (and I would dare say _featureless_) editor. It won’t have LSP working. It won’t have tree-sitter working
 either. Nothing for git integrated. Nothing for delimiters, nothing for pickers, nothing for any modern development. The
-power of something like Emacs, Neovim etc. is to build on _extensibility_. I used to enjoy that, until I came to the
-realization that, _perhaps_, it would be great to put things into perspective: is extensibility something we actually
-want? What do we try to solve with it? Well, we extend tools to add new features and new behaviors. We extend things so
-that the native / core tool ships with minimal features but doesn’t prevent people from adding specific and customized
-capabilities.
+power of something like Emacs, Neovim etc. is to build on _extensibility_.
+
+I used to enjoy that, until I came to the realization that, _perhaps_, it would be great to put things into perspective: 
+is extensibility something we actually want? What do we try to solve with it? Well, we extend tools to add new features 
+and new behaviors. We extend things so that the native / core tool ships with minimal features but doesn’t prevent 
+people from adding specific and customized capabilities.
 
 ### Extensibility
 
@@ -500,9 +541,9 @@ anything **outside of Neovim**. What it means is that, you’re not going to use
 the interfaces, scripting languages, DSLs etc. of the tool you want to extend.
 
 For instance, people might argue that extending Neovim is great because it only requires learning Lua, which is not
-specific to Neovim, but that it is not completely acurate. You have to learn “Neovim Lua”, which is basically its own
-beast. It’s like the standard library, but for Neovim. It will provide you with APIs you can use — and only use — to
-add new features to Neovim.
+specific to Neovim, but that it is not actually true nor acurate. You have to learn _“Neovim Lua”_, which is basically 
+its own beast. It’s like the standard library, but for Neovim. It will provide you with APIs you can use — and only 
+use — to add new features to Neovim.
 
 The same argument can be made to _any extensible_ editor. VS Code, Emacs, etc.
 
@@ -513,18 +554,22 @@ them instead of pushing more features into them. That vision is not very popular
 why. For instance, Vim has [vim-fugitive](https://github.com/tpope/vim-fugitive), a Git client for Vim / Neovim. It has
 2k commits, between 8k-9k lines of code… and can be used only in Vim and Neovim. Yes, it extends and adds features
 _inside_ those editors, but still. If at some point you decide to switch to another editor, you can forget about this
-plugin. Now repeat that reasoning for all the plugins you use. That has led many people to just install as few plugins
-as possible and switch to composability.
+plugin. This is even worse with something like [magit](https://magit.vc/), which is the best Git client I haver ever
+used. Yet I don’t use it anymore, because it’s an Emacs plugin. What a shame.
 
-Composability is the same concept as in code. You have two systems `A` and `B` doing `thingA` and `thingB`, and you write
-some _piping_ glue code / script to connect both. People use many different languages to glue things together. Among
-the most famous approaches:
+Now repeat that reasoning for all the plugins you use. That has led some people to just install as few plugins as
+possible and switch to composability.
+
+Composability is the same concept as in code. You have two systems `A` and `B` doing `thingA` and `thingB`, and you 
+write some _piping_ glue code / script to connect both. People use many different languages to glue things together. 
+Among the most famous approaches:
 
 - Python.
 - Perl, especially when dealing with filtering text.
 - The shell, and especially any POSIX.2 compliant shell (no, don’t start talking about `fish`).
 
-I have a shell functions that I source when I start my shell, called `p`, which looks like this:
+I have shell functions that I source when I start my shell; for instance, one called `p`, to switch to my spare-time
+projects:
 
 ```sh
 p () {
@@ -535,7 +580,7 @@ p () {
 ```
 
 This is a great example of composability, which composes the content of a project directory (the `$PROJ_DIR` environment
-variable, or `~/dev` by default), with the `sk` fuzzy finder, and then change the directory to whatever the user has
+variable, or `~/dev` by default), with the `sk` fuzzy finder, and then changes the directory to whatever the user has
 picked. I use that script all the time to quickly move to my various projects.
 
 Notice that, `sk`, `fzf`, etc. already are tools that implement fuzzy searching for arbitrary inputs. Tools such as
@@ -543,22 +588,22 @@ Notice that, `sk`, `fzf`, etc. already are tools that implement fuzzy searching 
 pipes as well and integrated into your work environment.
 
 Then the question starts to appear: why do editors / plugins re-implement all of that to have it inside the editor? It’s
-pretty apparent in the Neovim community, but it often times ends up with abandonware plugins, and harder to maintain
+pretty apparent in the Neovim community, but it often ends up with abandonware plugins, and harder to maintain
 editors.
 
-While I was wondering all that, I was getting pretty productive with Helix, enjoying its simpler design, data
-configuration, better editing features and overall way more stable experience. I remembered that most of Helix design
-came from Kakoune. And I started to think about one (not so) crazy idea: should I have a look at Kakoune?
+While I was wondering about all that, I was getting pretty productive with Helix, enjoying its simpler design, data
+configuration, better editing features and overall way more stable experience. I remembered that most of the Helix
+design came from Kakoune. And I started to think about one (not so) crazy idea: should I have a look at Kakoune?
 
 And let’s enter Kakoune.
 
 # Kakoune
 
-As mentioned above, Helix was _heavily_ inspired by Kakoune. The main difference, from the surface point of view, is
+As mentioned above, Helix is _heavily_ inspired by Kakoune. The main difference, from the surface, with distance, is
 that Helix comes with more bundled features, like LSP, tree-sitter, pickers, etc. However, there are more (drastic)
 differences that I need to talk about.
 
-The first thing is, again, the design. And for that, I really need to quote a part of the
+The first thing is, again, the design. And for that, I really need to quote a part from the
 [excellent design doc](https://github.com/mawww/kakoune/blob/master/doc/design.asciidoc) written by
 [@mawww](https://github.com/mawww). The part that is the most interesting to me is, obviously, _composability_.
 
@@ -580,7 +625,7 @@ maintenance, hence less bugs and more stable. Also, it doesn’t blindly ignore 
 
 Let’s start with an example. Yes, Kakoune doesn’t have a fuzzy picker to pick your files. However, as mentioned above,
 it composes well with its environment. It does that via different mechanisms (shell blocks, FIFOs, UNIX sockets, etc.).
-Here, we can just whatever we like to get a list of files, and let Kakoune ask the user which files to open. We then
+Here, we can just use whatever we like to get a list of files, and let Kakoune ask the user which files to open. We then
 simply use the selected value and open it. In order to do that, you need to read the design doc to understand a couple
 of other things, such as the section about _interactive use and scripting_. Quoting:
 
@@ -647,8 +692,8 @@ The design is not extensible: it’s composable, and all in all, it makes so muc
 
 If you are used to Helix, then Kakoune with a bit of configuration will feel very similar to Helix. Of course, you will
 have to look around for LSP and tree-sitter support. The way we do that is by adding external processes to interact with
-Kakoune servers / clients via UNIX sockets. Kakoune doesn’t know anything about LSP or tree-sitter, but you can write
-a binary in any language you want and send remote commands to control the behavior of Kakoune.
+Kakoune servers / clients via UNIX sockets, FIFO pipes, etc.. Kakoune doesn’t know anything about LSP or tree-sitter,
+but you can write a binary in any language you want and send remote commands to control the behavior of Kakoune.
 
 - For LSP: [kak-lsp/kak-lsp](https://github.com/kak-lsp/kak-lsp)
 - For tree-sitter: [phaazon/kak-tree-sitter](https://github.com/phaazon/kak-tree-sitter) (I’m stil working on it and it
@@ -661,10 +706,11 @@ add LSP / tree-sitter support, which is an interesting aspect.
 I plan on writing a blog article detailing the design of `kak-tree-sitter`, because I think it’s a good source of
 knowledge regarding UNIX and tree-sitter.
 
-Besides that, Kakoune is way more mature than Helix, in the sense that it has code specific to some edge cases with
+Besides that, Kakoune is way more mature than Helix, in the sense that it has some specificities to some edge cases with
 multi-selection features (such as, what happens when you have multiple cursors inside text looking like function
 argument lists, and you type `mia` to select them, but some selections are actually not arguments? Kakoune will remove
-the mismatched selections, which is what we would expect, while Helix…… erm it’s complicated!).
+the mismatched selections, which is what we would expect, while Helix…… erm it’s complicated! but currently, it will
+keep the selections around, which is confusing and dangerous).
 
 Kakoune has a _wonderful_ feature called **marks**. Marks are different from what you have in Vim. They use a specific
 register to record the current selections and eventually restore them later, supporting merging selections and editing
@@ -703,18 +749,52 @@ And then press `<a-z>a` to merge the current selection to the one(s) already sto
 Thank you to [@|](https://github.com/|) for their contribution.
 ```
 
-Two cursors at the right place! This is extremely powerful and a feature that should arrive in Helix, but not sure
+Two cursors at the right places! This is extremely powerful and a feature that should arrive in Helix, but not sure
 exactly when.
 
 A pretty other important thing to say about Kakoune is that it has a server/client design that allows to share session
 contexts. That is the main mechanisms used to implement native splits (via Kitty, tmux, whatever), but also many other
 features, such as project isolation, viewing the same buffers with different highlighters, etc. etc.
 
+## …but it’s not perfect
+
+There is one important thing I need to mention. I have been playing with Kakoune for a while now, and I have been
+working on `kak-tree-sitter` for almost as long as I’ve been working Kakoune (couple of months). And there is one issue
+with the UNIX approach.
+
+See, tree-sitter, LSP, DAP, git gutters, etc. All those things are pretty _fundamental_ to a modern text editor.
+Externalizing them (Kakoune) is an interesting take, but I’m not entirely sure Kakoune is still doing it completely
+correctly.
+
+The main problem is _social intelligence_. Because all tooling is now externalized, many people can come up with
+their own efforts. For instance, `kak-lsp` and `kak-tree-sitter` are completely separate projects, and they should
+remain that way (for many reasons; scopes, maintenance, dependencies, etc.). However, in order to operate on the editor
+contents, both programs must interact with the editor. That implies:
+
+- Retrieving buffer contents.
+- Performing some actions that can mutate (and overlap / hijack) each other.
+- Insert hooks that might be incompatible between them.
+
+This problem is important, because dumping the whole content of a big buffer to an external process is one thing, doing
+it for every different external processes is a massive overhead. Because I have read a bit the source code of `kak-lsp`,
+I know that we (`kak-tree-sitter`) are doing similar things: we do use FIFOs to write buffer content and communicate
+with our servers / daemons without going through the disk. But we are doing it that _twice_. And it’s just two projects;
+any dissociate projects needing to access the buffer content will probably perform similar things.
+
+That is a massive problem to me and I’m not sure how I feel about it. I’m not against sending the content of a buffer
+via a FIFO to an externalized program — I actually think it’s a pretty good design —, but doing it for every
+integration… I’m not exactly sure what would be the best solution, but maybe something that would snapshot a buffer
+inside some POSIX shared memory (with mutable lock access if needed) could be one way to go. Honestely, I am not sure.
+
+All of that to say that, the take of Helix is pretty good here, because all of those UNIX problems are not there in that
+editor: everything runs in the same process, inside the same memory region. I will come back to this problem with my
+next article on `kak-tree-sitter` and its design.
+
 # Conclusion
 
 I have learned so many things lately, with both Helix and Kakoune (especially Kakoune, it made me love UNIX even more).
 All of that echoes the disclaimer I made earlier: yes, Vim and Neovim are good, but Kakoune and Helix are so much better
-to me. Better design, better editing experience, largely snappier, more confidence in the direction of the code of the
+to me. Better designs, better editing experiences, largely snappier, more confidence in the direction of the
 native code (because a much, much smaller codebase). Helix is written in Rust, Kakoune in C++, but what matters is the
 actual design. To me, Kakoune is by far the best designed software I have ever seen, and for that, I really admire the
 work of [@mawww](https://github.com/mawww) and everyone else involved in the project. My contribution to the Kakoune
