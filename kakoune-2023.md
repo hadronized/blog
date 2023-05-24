@@ -1,4 +1,4 @@
-Oh my… 2023 has been such a trek so far… If you have missed my [previous article](https://github.com/helix-editor/helix)
+Oh my… 2023 has been such a trek so far… If you have missed my [previous article](https://phaazon.net/blog/editors-in-2022)
 about my thoughts about editors and development platforms, I think it’s probably the moment to have a look at it.
 
 Today is the end of May 2023. [Helix](https://helix-editor.com/) has been my primary editor for months now. I haven’t
