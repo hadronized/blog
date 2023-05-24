@@ -56,7 +56,7 @@ is a _massive_ and important difference because of two main things:
 
 About code maintenance, having all of those features natively integrated in the editor means that you are 100% sure that
 if you get the editor to start, the features will work, and the editor developers will keep that updated within the
-next iteraton of the editor. For instance, having tree-sitter natively implemented (Rust) in Helix means that the
+next iteration of the editor. For instance, having tree-sitter natively implemented (Rust) in Helix means that the
 editor itself knows about tree-sitter and its grammars, highlights queries and features. The same thing goes for
 surrounding-pairs or auto-pairs, for instance. If the team decides to change the way text is handled in buffers, then
 the code for auto-pairs / surrounding-pairs **will have to be updated for the editor to be releasable**.
