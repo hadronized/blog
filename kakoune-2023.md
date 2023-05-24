@@ -209,6 +209,9 @@ I love |sushi<.
 But I |also love pizza<.
 ```
 
+> Erratum: `B` is not defined to this behavior in a vanilla Helix. I have remapped it to the Kakoune behavior. It
+> doesn’t change much to what I’m saying here, though.
+
 Multi-cursor is then not only a nice visual help, but also a completely new way of editing your buffers. Once you get
 the hang of it, you don’t really think in terms of a single cursor but many selections, ranges, however you like to call
 them.
@@ -253,6 +256,8 @@ fn foo(x: i32|, y: i32<) {}
 
 fn bar(a: String|, b: bool<) {}
 ```
+
+> Erratum: same thing as with `B`; I have remapped it in my config. The default `B` doesn’t extend like this.
 
 And just press `d`:
 
