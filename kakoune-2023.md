@@ -792,6 +792,9 @@ next article on `kak-tree-sitter` and its design.
 
 # Conclusion
 
+Today, I’m mainly using both Kakoune and Helix. Helix still has some bugs, even with tree-sitter (which my daemon
+doesn’t have, funnily!), so I sometimes use one or the other tool.
+
 I have learned so many things lately, with both Helix and Kakoune (especially Kakoune, it made me love UNIX even more).
 All of that echoes the disclaimer I made earlier: yes, Vim and Neovim are good, but Kakoune and Helix are so much better
 to me. Better designs, better editing experiences, largely snappier, more confidence in the direction of the
