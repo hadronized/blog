@@ -614,5 +614,12 @@
     "publish_date": "2023-05-24 11:50:00 Z",
     "tags": ["editors", "productivity-platforms"],
     "slug": "more-hindsight-vim-helix-kakoune"
+  },
+  {
+    "name": "Kakoune design analysis with kak-tree-sitter",
+    "path": "kakoune-2023-v2.md",
+    "publish_date": "2023-06-09 19:20:00 Z",
+    "tags": ["editors", "productivity-platforms"],
+    "slug": "kak-tree-sitter"
   }
 ]
