@@ -635,5 +635,12 @@
     "publish_date": "2023-10-12 20:35:00 Z",
     "tags": ["note-taking", "org-mode", "zettelkasten"],
     "slug": "note-taking-2023"
+  },
+  {
+    "name": "The Kakoune philosophy",
+    "path": "kakoune-philosophy-2023.md",
+    "publish_date": "2023-12-23 14:15:00 Z",
+    "tags": ["kakoune"],
+    "slug": "kakoune-philosophy"
   }
 ]
