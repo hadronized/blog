@@ -18,7 +18,7 @@ and pragmatic programmer environment. It will cover:
 # What I mean with UI and UX
 
 **UI** means “anything interfacing the user to the system.” It’s both the visual depiction of the service (the menu, the
-colors, the fonts, etc.) and the way you interact with the system (with the keyboard, by cliking on buttons, when a
+colors, the fonts, etc.) and the way you interact with the system (with the keyboard, by clicking on buttons, when a
 system event happens, etc.).
 
 **UX** means “how the user experiences the system.” For instance, something that is not UI at all but enhances the UX
@@ -27,9 +27,9 @@ filtering with any tags. Etc.
 
 There are many possible UI implementations for a given UX item: implementing filtering can be done with a select box in
 a GUI, but the UX is not great because the user is presented with a set of finite choices, and if there are many, it’s
-pretty annoying to scroll down the list to find the one we want. Even with this bad UX design, most of select boxes
+pretty annoying to scroll down the list to find the one we want. Even with this bad UX design, most of select box
 implementations (e.g. web) allow to press keys to jump to the entry in the select options — most of the time, you don’t
-see what you type -> bad UX for the user. Another possible UI implementation would be to use free text box that would
+see what you type -> bad UX for the user. Another possible UI implementation would be to use a free text box that would
 filter based on its content — it could even be live for an even better UX. Etc. etc.
 
 Now, would you prefer a nice looking GUI with the select box, or a blander UI but with the fuzzy search box? Clearly,
@@ -39,14 +39,15 @@ similar to the blander UI in terms of UX, but it would look (much) better… whi
 # Small disgression: TUI vs. GUI
 
 > TUI: Text User Interface, which is a program mimicking traditional GUIs in the terminal.
+
 > GUI: Graphics User Interface, the typical window-based applications you run on your machine.
 
-Before jumping to the Kakoune content, I just want to disgress slightly to talk about something I see everywhere that
-itches me a bit: many individuals seem to say that a TUI is often written in a way that optimizes UX and GUI the UI, and
-hence, oftentimes, using a TUI feels much better. I agree with this (this is the reason why I’m using editors and tools
-inside my terminal instead of a dedicated GUI, even though I think the UI is worse, for many reasons: no pixel-perfect
-alignment of things; no direct integration of the application at the OS level, it has to go through the terminal and
-shell; etc. etc.).
+Before jumping to the Kakoune content, I just want to disgress slightly to talk about something I often see something
+that itches me a bit: many individuals seem to say that a TUI is often written in a way that optimizes UX and GUI the
+UI, and hence, oftentimes, using a TUI feels much better. I agree with this (this is the reason why I’m using editors
+and tools inside my terminal instead of a dedicated GUI, even though I think the UI is worse, for many reasons: no
+pixel-perfect alignment of things; no direct integration of the application at the OS level, it has to go through the
+terminal and shell; etc. etc.).
 
 However, is there anything forcing a GUI not to provide the same kind of interactions as a TUI? I don’t think so. If
 you make your TUI keyboard-oriented, everything you do is just listening to keyboard events provided by whatever
@@ -58,7 +59,7 @@ topic of another blog article. Let’s go back to the original matter.
 
 # Kakoune UX
 
-Kakoune, upon installation, already provide a lot of good things in terms of UX. But as you get more productive with
+Kakoune, upon installation, already provides a lot of good things in terms of UX. But as you get more productive with
 it, you will face some problems. For instance, the first one I came across (pretty quickly being honest, coming from
 [Helix]) was surrounding: adding, deleting and replacing surrounding delimiters. Where you need a plugin to do that in
 the Vim world, in Kakoune, it’s another topic. Some plugins exist to do exactly that, but honestly, read along.
@@ -73,7 +74,7 @@ For instance, since we have the power to insert at the beginning and at the end 
 should insert a quote at the beginning of the selection… and `a'` will do the same at the end! So you can already have
 a somewhat working surrounding add operation by typing `i'<esc>a'`!
 
-> If you are adventurous, you can 'read' the documentation of `<a-;>`, which allows to leave insert mode to normal mode
+> If you are adventurous, you can read the documentation of `<a-;>`, which allows to leave insert mode to normal mode
 > for a single command, and come back to insert mode. You can use this to replicate what we did above without the
 > `<esc>` key: `i'<a-;>a'`. Magic.
 
@@ -94,7 +95,7 @@ at the beginning of each selection**.
 What is great is that the default register, `"`, is selection-aware: its content will be different from one selection to
 another. Said otherwise, there is one `"` register for each selection. Hence, we can write this:
 
-```kak
+```
 define-command -override my-surround-add -params 2 %{
   evaluate-commands -draft -save-regs '"' %{
     set-register '"' %arg{1}
@@ -110,13 +111,13 @@ And here you go. You can now invoke `:my-surround-add ( )<ret>` to add parenthes
 Kakoune has the concept of user modes, which is a nice feature allowing to declare a keyset (that will be displayed
 by the help in the bottom right of your screen) when entered.
 
-```kak
+```
 declare-user-mode my-surround-add
 ```
 
 We can make one with a bunch of mappings in that user mode:
 
-```kak
+```
 map global my-surround-add (   ':my-surround-add ( )<ret>'         -docstring 'surround with parenthesis'
 map global my-surround-add )   ':my-surround-add ( )<ret>'         -docstring 'surround with parenthesis'
 map global my-surround-add [   ':my-surround-add [ ]<ret>'         -docstring 'surround with brackets'
@@ -140,7 +141,7 @@ straightforward. Kakoune has some native mappings to select everything _inside_ 
 So, pressing `<a-a>(` (or `<a-a>)`, same thing) will select everything around the cursor up to the next pair of
 parenthesis.
 
-> Note: I have personnaly remapped that to `mi` and `ma`, but that collides with the default meaning of the `m` key in
+> Note: I have personally remapped that to `mi` and `ma`, but that collides with the default meaning of the `m` key in
 > Kakoune, so I will use the native mapping here instead.
 
 We can then simply use the previous `i` and `a` command mentioned before to start editing at the beginning and end of
@@ -149,7 +150,7 @@ delimiter) and `a<backspace>` will insert at the end of the selection and remove
 delimiter). Eh, that looks like so simple it’s almost stupid. But that’s what makes Kakoune so damn good: it’s _simple_
 to reason about:
 
-```kak
+```
 define-command -hidden my-surround-delete-key -params 1 %{
   execute-keys -draft "<a-a>%arg{1}i<del><esc>a<backspace><esc>"
 }
@@ -161,10 +162,10 @@ define-command my-surround-delete %{
 }
 ```
 
-I let the exercise of writting the replace version. Because Kakoune composes really well, you can already imagine that
-you should be able to use the previous commands and mappings. And indeed:
+Because Kakoune composes really well, you can already imagine that you should be able to use the previous commands and
+mappings. And indeed:
 
-```kak
+```
 define-command my-surround-replace %{
   on-key %{
     surround-replace-sub %val{key}
@@ -172,7 +173,7 @@ define-command my-surround-replace %{
 }
 
 define-command -hidden my-surround-replace-sub -params 1 %{
-	on-key %{
+  on-key %{
     evaluate-commands -no-hooks -draft %{
       execute-keys "<a-a>%arg{1}"
 
@@ -183,7 +184,7 @@ define-command -hidden my-surround-replace-sub -params 1 %{
 
     # delete the old one
     my-surround-delete-key %arg{1}
-	}
+  }
 }
 ```
 
@@ -230,7 +231,7 @@ everything we need. We can then just simply run the `edit -existing %reg{p} %reg
 
 aoc-18.md:1:1:lol
 
-```kak
+```
 define-command -override my-jump-for-current-line %{
   evaluate-commands -save-regs clp %{
     execute-keys -draft 'ghT:"py2lT:"ly2lT:"cy'
@@ -252,7 +253,7 @@ A couple of comments here:
 The `:grep` tool implements something probably very similar to this, but it uses `%opt{grepcmd}`, which you can change
 to whatever you like. I personally use:
 
-```kak
+```
 set-option global grepcmd 'rg --column --smart-case --sort path'
 ```
 
@@ -280,19 +281,19 @@ commands in the `%val{text}` variable. It supports some switches, and one of int
 `-shell-script-candidates`. That switch accepts a shell command to execute, reading from its standard output
 asynchronously and displaying into the completion items. For instance, try running the following command:
 
-```kak
+```
 prompt -shell-script-candidates ls file: %{ info "you selected %val{text}" }
 ```
 
 It runs `ls`, gets the output and allows you to fuzzy complete the result. Now consider this:
 
-```kak
+```
 prompt -shell-script-candidates 'fd --type file' open: %{ edit -existing %val{text} }
 ```
 
 And bam. Here you have it. Fuzzy picker in Kakoune. You can map that to a command, or wrap it in a command:
 
-```kak
+```
 define-command my-file-picker %{
   prompt -shell-script-candidates 'fd --type file' open: %{ edit -existing %val{text} }
 }
@@ -300,7 +301,7 @@ define-command my-file-picker %{
 
 If — like many people — you want that to be run when you type `SPC f`:
 
-```kak
+```
 map global user f ':my-file-picker<ret>'
 ```
 
@@ -319,7 +320,7 @@ situations:
 And then, there is nothing much more to do. We can wrap those in two commands agnostic of the platform by using the
 `uname` utility:
 
-```kak
+```
 declare-option str extra_yank_system_clipboard_cmd %sh{
   test "$(uname)" = "Darwin" && echo 'pbcopy' || echo 'xclip'
 }
@@ -332,7 +333,7 @@ declare-option str extra_paste_system_clipboard_cmd %sh{
 And the actual commands, using the `!` key (to run a shell command with the current selection piped as standard input
 and replace selections with its output) and `<a-!>` (which runs a shell command and ignore its output):
 
-```kak
+```
 define-command extra-yank-system -docstring 'yank into the system clipboard' %{
   execute-keys -draft "<a-!>%opt{extra_yank_system_clipboard_cmd}<ret>"
 }
