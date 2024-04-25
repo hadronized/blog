@@ -1,10 +1,10 @@
-Today, I want to write about [Zellij] and especially its latest news update[^1].
+Today, I want to write about [Zellij] and especially its latest news update[¹].
 
 # Zellij, the modern tmux?
 
 I came into Zellij a wild ago, while I was looking for something more modern over [tmux]. It had the terminal
 multiplexer features (windows, splits, focus, etc.), but was lacking features (sessions, for instance, were added
-mid-2021[^2]). As time passed, it started to get new features and promising. For instance, its layout system, allowing
+mid-2021[²]). As time passed, it started to get new features and promising. For instance, its layout system, allowing
 to have a more minimalistic view (the default one being really all-over-the-place).
 
 And then I realized that some very basic features from tmux were absent:
@@ -50,7 +50,7 @@ On the other side, Zellij ships with its “session manager” — which, honest
 	width=800
 />
 
-That thing is not something you have control on, and the Zellij CLI Actions[^3] won’t help you either.
+That thing is not something you have control on, and the Zellij CLI Actions[³] won’t help you either.
 
 > Note: we are also in the right to ask ourselves why there is a list of commands (that you can bind to), and a list of
 > CLI actions. The former is richer than the latter and it means that the commands you bind to your keys and the
@@ -61,7 +61,7 @@ one-liner, and it uses my favorite fuzzy picker.
 
 ## It gets worse
 
-Lately, I have decided to head over the Zellij news[^4] section to read about recent updates, and as mentioned at the
+Lately, I have decided to head over the Zellij news[⁴] section to read about recent updates, and as mentioned at the
 very top of this article, I was not disappointed. The latest update features some new enhancements, which goes against
 the concept of minimalism and even against the initial scope of the project:
 
@@ -94,7 +94,7 @@ I could summarize my thoughts as follows:
 [Zellij]: https://zellij.dev
 [tmux]: https://github.com/tmux/tmux/wiki
 [kakoune]: https://kakoune.org
-[^1]: https://zellij.dev/news/welcome-screen-pipes-filepicker/
-[^2]: https://github.com/zellij-org/zellij/blob/main/CHANGELOG.md#0120---2021-05-27
-[^3]: https://zellij.dev/documentation/cli-actions#cli-actions
-[^4]: https://zellij.dev/news/
+[¹]: https://zellij.dev/news/welcome-screen-pipes-filepicker/
+[²]: https://github.com/zellij-org/zellij/blob/main/CHANGELOG.md#0120---2021-05-27
+[³]: https://zellij.dev/documentation/cli-actions#cli-actions
+[⁴]: https://zellij.dev/news/
