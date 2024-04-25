@@ -45,7 +45,10 @@ Make a keybinding for that, and here you go, you have a customized session picke
 
 On the other side, Zellij ships with its “session manager” — which, honestly looks terrible to me.
 
-![](https://zellij.dev/img/zellij-session-manager-animated.gif)
+<img
+  src=https://zellij.dev/img/zellij-session-manager-animated.gif
+	width=800
+/>
 
 That thing is not something you have control on, and the Zellij CLI Actions[^3] won’t help you either.
 
